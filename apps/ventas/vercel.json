@@ -1,5 +1,5 @@
 {
-    "buildCommand": "cd ../.. && pnpm install --no-frozen-lockfile && pnpm --filter @lentejuelas/ventas run build",
+    "buildCommand": "pnpm --filter @lentejuelas/ventas run build",
     "installCommand": "pnpm install --no-frozen-lockfile",
     "framework": "nextjs"
 }
