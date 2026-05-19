@@ -1,5 +1,5 @@
 {
-    "buildCommand": "cd ../.. && pnpm install --no-frozen-lockfile && cd apps/core && pnpm exec prisma generate && pnpm --filter @lentejuelas/core run build",
+    "buildCommand": "cd ../.. && pnpm install --no-frozen-lockfile && pnpm --filter @lentejuelas/core run build",
     "installCommand": "pnpm install --no-frozen-lockfile",
     "framework": "nextjs"
 }

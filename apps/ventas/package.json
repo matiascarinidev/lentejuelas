@@ -3,8 +3,9 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
+        "postinstall": "cd ../.. && node -e \"try{require('fs').accessSync('apps/ventas/prisma/schema.prisma')}catch(e){}\" && prisma generate --schema=prisma/schema.prisma",
         "dev": "next dev -p 3002",
-        "build": "next build",
+        "build": "prisma generate --schema=prisma/schema.prisma && next build",
         "start": "next start -p 3002",
         "lint": "next lint",
         "db:generate": "prisma generate",
