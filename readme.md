@@ -77,7 +77,7 @@ Sistema de gestión integral para emprendimientos gastronómicos con producción
 
 ```bash
 # 1. Clonar
-git clone https://github.com/tuusuario/lentejuelas.git
+git clone https://github.com/matiascarinidev/lentejuelas.git
 cd lentejuelas
 
 # 2. Instalar dependencias
