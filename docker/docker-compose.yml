@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  db-core:
+    image: postgres:16-alpine
+    container_name: lentejuelas-core-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lentejuelas
+      POSTGRES_PASSWORD: lentejuelas_dev
+      POSTGRES_DB: lentejuelas_core
+    ports:
+      - "5432:5432"
+    volumes:
+      - core_pgdata:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lentejuelas -d lentejuelas_core"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db-ventas:
+    image: postgres:16-alpine
+    container_name: lentejuelas-ventas-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lentejuelas
+      POSTGRES_PASSWORD: lentejuelas_dev
+      POSTGRES_DB: lentejuelas_ventas
+    ports:
+      - "5433:5432"
+    volumes:
+      - ventas_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lentejuelas -d lentejuelas_ventas"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  core_pgdata:
+  ventas_pgdata:

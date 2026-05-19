@@ -1,0 +1,28 @@
+{
+    "name": "lentejuelas",
+    "private": true,
+    "scripts": {
+        "dev": "turbo dev",
+        "build": "turbo build",
+        "start": "turbo start",
+        "lint": "turbo lint",
+        "db:migrate:core": "pnpm --filter @lentejuelas/core db:migrate",
+        "db:migrate:ventas": "pnpm --filter @lentejuelas/ventas db:migrate",
+        "db:push:core": "pnpm --filter @lentejuelas/core db:push",
+        "db:push:ventas": "pnpm --filter @lentejuelas/ventas db:push",
+        "db:studio:core": "pnpm --filter @lentejuelas/core db:studio",
+        "db:studio:ventas": "pnpm --filter @lentejuelas/ventas db:studio"
+    },
+    "devDependencies": {
+        "turbo": "^2.0.0",
+        "prettier": "^3.2.0",
+        "typescript": "^5.4.0"
+    },
+    "engines": {
+        "node": ">=20"
+    },
+    "packageManager": "pnpm@9.0.0",
+    "prisma": {
+        "schema": "prisma/schema.prisma"
+    }
+}
