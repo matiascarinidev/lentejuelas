@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
+        "postinstall": "prisma generate",
         "dev": "next dev -p 3001",
         "build": "next build",
         "start": "next start -p 3001",
@@ -45,6 +46,6 @@
         "typescript": "^5.4.0"
     },
     "prisma": {
-        "seed": "tsx prisma/seed.ts"
+        "schema": "prisma/schema.prisma"
     }
 }
