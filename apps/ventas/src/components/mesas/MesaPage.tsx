@@ -2,21 +2,24 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
-import { Plus, Coffee, PlusCircle } from "lucide-react";
+import { Plus, Coffee, X, PlusCircle } from "lucide-react";
 import { ComandaForm } from "./ComandaForm";
 import { ProductoSelector } from "@/components/shared/ProductoSelector";
-import { fetchCore } from "@/lib/api";
 
 export function MesaPage() {
   const [mesas, setMesas] = useState<any[]>([]);
+  const [cargando, setCargando] = useState(true);
   const [comandaAbierta, setComandaAbierta] = useState<any>(null);
   const [formAbierto, setFormAbierto] = useState(false);
   const [mesaSeleccionada, setMesaSeleccionada] = useState<any>(null);
@@ -27,6 +30,7 @@ export function MesaPage() {
     const res = await fetch("/api/mesas");
     const json = await res.json();
     if (json.success) setMesas(json.data);
+    setCargando(false);
   };
 
   useEffect(() => {
@@ -35,12 +39,12 @@ export function MesaPage() {
 
   const crearMesa = async () => {
     const numero = mesas.length + 1;
-    await fetch("/api/mesas", {
+    const res = await fetch("/api/mesas", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ numero }),
     });
-    fetchMesas();
+    if (res.ok) fetchMesas();
   };
 
   const abrirComanda = (mesa: any) => {
@@ -58,35 +62,9 @@ export function MesaPage() {
 
   const cerrarComanda = async () => {
     if (!comandaAbierta) return;
-
     await fetch(`/api/comandas/${comandaAbierta.id}/cerrar`, {
       method: "POST",
     });
-
-    if (comandaAbierta.items?.length > 0) {
-      // Obtener info de productos desde Core para saber unidadesPorPack
-      const resProductos = await fetchCore("/productos?limite=100&activo=true");
-      const productosCore = resProductos.success
-        ? resProductos.data.productos
-        : [];
-
-      const itemsParaDescontar = comandaAbierta.items.map((item: any) => {
-        const producto = productosCore.find(
-          (p: any) => p.id === item.productoId
-        );
-        const unidadesPorPack = producto?.recetas?.[0]?.unidadesPorPack || 1;
-        return {
-          productoId: item.productoId,
-          cantidad: item.cantidad * unidadesPorPack,
-        };
-      });
-
-      await fetchCore("/stock/descontar", {
-        method: "POST",
-        body: JSON.stringify({ items: itemsParaDescontar }),
-      });
-    }
-
     setComandaAbierta(null);
     fetchMesas();
   };
@@ -129,59 +107,75 @@ export function MesaPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        {mesas.map((mesa) => (
-          <Card key={mesa.id}>
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Mesa #{mesa.numero}</CardTitle>
-                <Badge className={estadoColor[mesa.estado] || ""}>
-                  {mesa.estado}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {mesa.comandas?.length > 0 ? (
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Comanda activa</p>
-                  {mesa.comandas[0].items?.slice(0, 3).map((item: any) => (
-                    <p key={item.id} className="text-sm text-gray-500">
-                      {item.cantidad}x Prod #{item.productoId.slice(-4)} — $
-                      {Number(item.subtotal).toFixed(2)}
-                    </p>
-                  ))}
-                  {mesa.comandas[0].items?.length > 3 && (
-                    <p className="text-xs text-gray-400">
-                      +{mesa.comandas[0].items.length - 3} items más
-                    </p>
-                  )}
-                  <div className="flex items-center justify-between pt-2 border-t">
-                    <span className="text-sm font-bold">
-                      Total: ${Number(mesa.comandas[0].total).toFixed(2)}
-                    </span>
-                    <div className="flex gap-1">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => verComanda(mesa)}
-                      >
-                        Ver
-                      </Button>
-                    </div>
+        {cargando
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i}>
+                <CardHeader className="pb-2">
+                  <Skeleton className="h-5 w-24" />
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-8 w-full" />
+                </CardContent>
+              </Card>
+            ))
+          : mesas.map((mesa) => (
+              <Card key={mesa.id}>
+                <CardHeader className="pb-2">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">
+                      Mesa #{mesa.numero}
+                    </CardTitle>
+                    <Badge className={estadoColor[mesa.estado] || ""}>
+                      {mesa.estado}
+                    </Badge>
                   </div>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <p className="text-sm text-gray-500">Sin comandas activas</p>
-                  {mesa.estado === "LIBRE" && (
-                    <Button size="sm" onClick={() => abrirComanda(mesa)}>
-                      <Coffee className="mr-1 h-4 w-4" /> Abrir comanda
-                    </Button>
+                </CardHeader>
+                <CardContent>
+                  {mesa.comandas?.length > 0 ? (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Comanda activa</p>
+                      {mesa.comandas[0].items?.slice(0, 3).map((item: any) => (
+                        <p key={item.id} className="text-sm text-gray-500">
+                          {item.cantidad}x Prod #{item.productoId.slice(-4)} — $
+                          {Number(item.subtotal).toFixed(2)}
+                        </p>
+                      ))}
+                      {mesa.comandas[0].items?.length > 3 && (
+                        <p className="text-xs text-gray-400">
+                          +{mesa.comandas[0].items.length - 3} items más
+                        </p>
+                      )}
+                      <div className="flex items-center justify-between pt-2 border-t">
+                        <span className="text-sm font-bold">
+                          Total: ${Number(mesa.comandas[0].total).toFixed(2)}
+                        </span>
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => verComanda(mesa)}
+                          >
+                            Ver
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-sm text-gray-500">
+                        Sin comandas activas
+                      </p>
+                      {mesa.estado === "LIBRE" && (
+                        <Button size="sm" onClick={() => abrirComanda(mesa)}>
+                          <Coffee className="mr-1 h-4 w-4" /> Abrir comanda
+                        </Button>
+                      )}
+                    </div>
                   )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+                </CardContent>
+              </Card>
+            ))}
       </div>
 
       <ComandaForm
@@ -190,8 +184,8 @@ export function MesaPage() {
           setFormAbierto(false);
           setMesaSeleccionada(null);
         }}
-        mesaId={mesaSeleccionada?.id ?? 0}
-        mesaNumero={mesaSeleccionada?.numero ?? 0}
+        mesaId={mesaSeleccionada?.id || 0}
+        mesaNumero={mesaSeleccionada?.numero || 0}
         onSuccess={fetchMesas}
       />
 
