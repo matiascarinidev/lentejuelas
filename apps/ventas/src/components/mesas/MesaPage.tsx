@@ -25,6 +25,7 @@ export function MesaPage() {
   const [mesaSeleccionada, setMesaSeleccionada] = useState<any>(null);
   const [agregandoItems, setAgregandoItems] = useState(false);
   const [itemsAdicionales, setItemsAdicionales] = useState<any[]>([]);
+  const [creando, setCreando] = useState(false);
 
   const fetchMesas = async () => {
     const res = await fetch("/api/mesas");
@@ -38,13 +39,17 @@ export function MesaPage() {
   }, []);
 
   const crearMesa = async () => {
+    setCreando(true);
     const numero = mesas.length + 1;
     const res = await fetch("/api/mesas", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ numero }),
     });
-    if (res.ok) fetchMesas();
+    if (res.ok) {
+      await fetchMesas();
+    }
+    setCreando(false);
   };
 
   const abrirComanda = (mesa: any) => {
@@ -176,6 +181,17 @@ export function MesaPage() {
                 </CardContent>
               </Card>
             ))}
+        {creando && (
+          <Card className="opacity-50">
+            <CardHeader className="pb-2">
+              <Skeleton className="h-5 w-20" />
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Skeleton className="h-4 w-28" />
+              <Skeleton className="h-8 w-full" />
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <ComandaForm
