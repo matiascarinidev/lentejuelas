@@ -9,24 +9,25 @@ export function middleware(request: NextRequest) {
   ];
 
   if (request.method === "OPTIONS") {
-    return NextResponse.json(
-      {},
-      {
-        headers: {
-          "Access-Control-Allow-Origin": allowedOrigins.includes(origin)
-            ? origin
-            : "",
-          "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
-        },
-      }
-    );
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": allowedOrigins.includes(origin)
+          ? origin
+          : "",
+        "Access-Control-Allow-Methods": "GET, POST, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Max-Age": "86400",
+      },
+    });
   }
 
   const response = NextResponse.next();
 
   if (allowedOrigins.includes(origin)) {
     response.headers.set("Access-Control-Allow-Origin", origin);
+    response.headers.set("Access-Control-Allow-Credentials", "true");
   }
 
   return response;

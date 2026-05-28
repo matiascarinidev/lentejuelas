@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ProductoService } from "@/services/producto.service";
-import { corsResponse, handleOptions } from "@/lib/cors";
+
+export const dynamic = "force-dynamic";
 // GET /api/productos/:id
 export async function GET(
   request: NextRequest,
