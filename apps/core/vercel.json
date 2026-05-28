@@ -1,5 +1,5 @@
 {
-    "buildCommand": "pnpm --filter @lentejuelas/core run build",
+    "buildCommand": "pnpm exec prisma db push --skip-generate --schema=prisma/schema.prisma && pnpm --filter @lentejuelas/core run build",
     "installCommand": "pnpm install --no-frozen-lockfile",
     "framework": "nextjs"
 }
