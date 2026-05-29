@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { InsumoService } from "@/services/insumo.service";
 import { corsResponse } from "@/lib/cors";
+
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

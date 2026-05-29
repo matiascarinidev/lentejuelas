@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GastosService } from "@/services/gastos.service";
+export const dynamic = "force-dynamic";
 
 export async function POST(
   request: NextRequest,
