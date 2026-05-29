@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ProductoService } from "@/services/producto.service";
-export const dynamic = "force-dynamic";
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }

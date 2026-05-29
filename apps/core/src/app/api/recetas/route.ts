@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RecetaService } from "@/services/receta.service";
-export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

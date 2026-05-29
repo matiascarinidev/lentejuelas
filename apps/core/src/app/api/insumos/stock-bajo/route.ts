@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { InsumoService } from "@/services/insumo.service";
-export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const insumos = await InsumoService.obtenerStockBajo();

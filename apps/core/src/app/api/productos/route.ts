@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ProductoService } from "@/services/producto.service";
 import { ProductoDTO } from "@/types/producto";
-export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

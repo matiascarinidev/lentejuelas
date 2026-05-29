@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { InsumoService } from "@/services/insumo.service";
-export const dynamic = "force-dynamic";
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
