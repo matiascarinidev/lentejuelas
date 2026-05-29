@@ -25,7 +25,7 @@ export default function RootLayout({
         })
         .catch(() => {});
 
-      fetch("http://localhost:3002/api/pedidos?estado=PENDIENTE")
+      fetch(process.env.NEXT_PUBLIC_VENTAS_API_URL + "pedidos?estado=PENDIENTE")
         .then((r) => r.json())
         .then((j) => {
           if (j.success) setPedidosPendientes(j.data.pedidos?.length || 0);
