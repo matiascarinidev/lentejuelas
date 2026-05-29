@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   const [alertas, setAlertas] = useState(0);
   const [pedidosPendientes, setPedidosPendientes] = useState(0);
-
+  const VENTAS_API = process.env.NEXT_PUBLIC_VENTAS_API_URL;
   useEffect(() => {
     const fetchNotificaciones = () => {
       fetch("/api/stock/dashboard")
@@ -25,7 +25,7 @@ export default function RootLayout({
         })
         .catch(() => {});
 
-      fetch(process.env.NEXT_PUBLIC_VENTAS_API_URL + "pedidos?estado=PENDIENTE")
+      fetch(`${VENTAS_API}/pedidos?estado=PENDIENTE`)
         .then((r) => r.json())
         .then((j) => {
           if (j.success) setPedidosPendientes(j.data.pedidos?.length || 0);
