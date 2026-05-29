@@ -1,10 +1,8 @@
 import { addToQueue } from "./offlineQueue";
 
-const CORE_API = "http://localhost:3001/api";
-
 export async function fetchCore(path: string, options?: RequestInit) {
   try {
-    const res = await fetch(`${CORE_API}${path}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_CORE_API_URL}${path}`, {
       ...options,
       headers: {
         "Content-Type": "application/json",
