@@ -11,7 +11,7 @@ import { ProveedorPage } from "@/components/proveedores/ProveedorPage";
 import { GastosPage } from "@/components/gastos/GastosPage";
 import { StockPage } from "@/components/stock/StockPage";
 import { SimuladorPage } from "@/components/produccion/SimuladorPage";
-
+import { LayoutClient } from "./layout-client";
 import { useState } from "react";
 
 const tabs = [
@@ -31,32 +31,34 @@ export default function Home() {
   const [tab, setTab] = useState("dashboard");
 
   return (
-    <div>
-      <div className="border-b bg-white px-6 overflow-x-auto">
-        <Tabs value={tab} onValueChange={setTab}>
-          <TabsList className="w-full justify-start gap-6 rounded-none border-b-0 bg-transparent p-0 flex-nowrap">
-            {tabs.map((t) => (
-              <TabsTrigger
-                key={t.value}
-                value={t.value}
-                className="rounded-none border-b-2 border-transparent px-4 py-3 whitespace-nowrap data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent"
-              >
-                {t.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+    <LayoutClient>
+      <div>
+        <div className="border-b bg-white px-6 overflow-x-auto">
+          <Tabs value={tab} onValueChange={setTab}>
+            <TabsList className="w-full justify-start gap-6 rounded-none border-b-0 bg-transparent p-0 flex-nowrap">
+              {tabs.map((t) => (
+                <TabsTrigger
+                  key={t.value}
+                  value={t.value}
+                  className="rounded-none border-b-2 border-transparent px-4 py-3 whitespace-nowrap data-[state=active]:border-emerald-600 data-[state=active]:bg-transparent"
+                >
+                  {t.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
+        {tab === "dashboard" && <DashboardPage />}
+        {tab === "produccion" && <ProduccionPage />}
+        {tab === "simulador" && <SimuladorPage />}
+        {tab === "compras" && <ComprasPage />}
+        {tab === "stock" && <StockPage />}
+        {tab === "productos" && <ProductoPage />}
+        {tab === "recetas" && <RecetaPage />}
+        {tab === "insumos" && <InsumoPage />}
+        {tab === "gastos" && <GastosPage />}
+        {tab === "proveedores" && <ProveedorPage />}
       </div>
-      {tab === "dashboard" && <DashboardPage />}
-      {tab === "produccion" && <ProduccionPage />}
-      {tab === "simulador" && <SimuladorPage />}
-      {tab === "compras" && <ComprasPage />}
-      {tab === "stock" && <StockPage />}
-      {tab === "productos" && <ProductoPage />}
-      {tab === "recetas" && <RecetaPage />}
-      {tab === "insumos" && <InsumoPage />}
-      {tab === "gastos" && <GastosPage />}
-      {tab === "proveedores" && <ProveedorPage />}
-    </div>
+    </LayoutClient>
   );
 }

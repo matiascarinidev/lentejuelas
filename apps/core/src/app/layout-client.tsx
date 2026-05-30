@@ -1,0 +1,64 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { AlertTriangle, ShoppingCart } from "lucide-react";
+
+export function LayoutClient({ children }: { children: React.ReactNode }) {
+  const [alertas, setAlertas] = useState(0);
+  const [pedidosPendientes, setPedidosPendientes] = useState(0);
+
+  useEffect(() => {
+    const fetchNotificaciones = () => {
+      fetch("/api/stock/dashboard")
+        .then((r) => r.json())
+        .then((j) => {
+          if (j.success) setAlertas(j.data.alertasStockBajo || 0);
+        })
+        .catch(() => {});
+
+      fetch(
+        "https://lentejuelas-ventas.vercel.app/api/pedidos?estado=PENDIENTE"
+      )
+        .then((r) => r.json())
+        .then((j) => {
+          if (j.success) setPedidosPendientes(j.data.pedidos?.length || 0);
+        })
+        .catch(() => {});
+    };
+
+    fetchNotificaciones();
+    const interval = setInterval(fetchNotificaciones, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-gray-50">
+      <nav className="border-b bg-white px-6 py-3">
+        <div className="flex items-center justify-between">
+          <span className="text-lg font-bold text-emerald-700">
+            Lentejuelas
+          </span>
+          <div className="flex items-center gap-3">
+            {pedidosPendientes > 0 && (
+              <Badge
+                variant="outline"
+                className="flex items-center gap-1 border-amber-300 text-amber-700"
+              >
+                <ShoppingCart className="h-3 w-3" />
+                {pedidosPendientes} pedidos
+              </Badge>
+            )}
+            {alertas > 0 && (
+              <Badge variant="destructive" className="flex items-center gap-1">
+                <AlertTriangle className="h-3 w-3" />
+                {alertas} stock bajo
+              </Badge>
+            )}
+          </div>
+        </div>
+      </nav>
+      {children}
+    </main>
+  );
+}
