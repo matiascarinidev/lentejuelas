@@ -48,6 +48,16 @@ export default function RootLayout({
         />
         <meta property="og:title" content="Lentejuelas" />
         <meta
+          property="og:image"
+          content="https://lentejuelas-core.vercel.app/og-image.png"
+        />
+        <meta property="og:image:width" content="800" />
+        <meta property="og:image:height" content="800" />
+        <meta
+          name="twitter:image"
+          content="https://lentejuelas-core.vercel.app/og-image.png"
+        />
+        <meta
           property="og:description"
           content="Gestión de producción, recetas, costos y ventas. Aplicación web para emprendedores gastronómicos."
         />
