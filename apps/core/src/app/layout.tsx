@@ -40,6 +40,25 @@ export default function RootLayout({
 
   return (
     <html lang="es">
+      <head>
+        <title>Lentejuelas - Core</title>
+        <meta
+          name="description"
+          content="Sistema de gestión para emprendimientos gastronómicos"
+        />
+        <meta property="og:title" content="Lentejuelas" />
+        <meta
+          property="og:description"
+          content="Gestión de producción, recetas, costos y ventas. Aplicación web para emprendedores gastronómicos."
+        />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Lentejuelas" />
+        <meta
+          name="twitter:description"
+          content="Gestión de producción, recetas, costos y ventas. Aplicación web para emprendedores gastronómicos."
+        />
+      </head>
       <body className={inter.className}>
         <main className="min-h-screen bg-gray-50">
           <nav className="border-b bg-white px-6 py-3">
