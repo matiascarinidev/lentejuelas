@@ -28,23 +28,27 @@ interface ProductoSelectorProps {
 }
 
 export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
-  const [productos, setProductos] = useState<ProductoVenta[]>([]);
+  const [productos, setProductos] = useState<any[]>([]);
   const [busqueda, setBusqueda] = useState("");
   const [mostrando, setMostrando] = useState(false);
 
   useEffect(() => {
     fetchCore("/productos?limite=100&activo=true").then((data) => {
-      if (data.success)
+      if (data.success && data.data?.productos) {
         setProductos(
-          data.data.productos?.map((p: any) => ({
+          data.data.productos.map((p: any) => ({
             ...p,
-            stockActual: p.stockActual || 0,
+            stockActual: Number(p.stockActual) || 0,
+            precioVenta:
+              Number(p.precioVentaFinal ?? p.precioVentaSugerido) || 0,
             unidadesPorPack: p.recetas?.[0]?.unidadesPorPack || null,
           }))
         );
+      }
     });
   }, []);
-  const productosFiltrados = productos?.filter(
+
+  const productosFiltrados = productos.filter(
     (p) =>
       p.nombre.toLowerCase().includes(busqueda.toLowerCase()) &&
       !items.find((i) => i.productoId === p.id)
@@ -57,8 +61,8 @@ export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
         productoId: p.id,
         nombre: p.nombre,
         cantidad: 1,
-        precioUnitario: p.precioVentaSugerido,
-        unidadesPorPack: p.recetas?.[0]?.unidadesPorPack || null,
+        precioUnitario: p.precioVenta,
+        unidadesPorPack: p.unidadesPorPack || null,
       },
     ]);
     setBusqueda("");
@@ -103,10 +107,10 @@ export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
         />
         {mostrando && busqueda && (
           <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-48 overflow-y-auto">
-            {productosFiltrados && productosFiltrados.length === 0 ? (
+            {productosFiltrados.length === 0 ? (
               <p className="p-3 text-sm text-gray-500">Sin resultados</p>
             ) : (
-              productosFiltrados?.slice(0, 8).map((p) => (
+              productosFiltrados.slice(0, 8).map((p) => (
                 <button
                   key={p.id}
                   className="w-full text-left px-3 py-2 hover:bg-gray-50"
@@ -126,7 +130,7 @@ export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
                       </span>
                     </div>
                     <Badge variant="outline" className="text-xs">
-                      ${p.precioVentaSugerido.toFixed(2)}
+                      ${p.precioVenta.toFixed(2)}
                     </Badge>
                   </div>
                 </button>
