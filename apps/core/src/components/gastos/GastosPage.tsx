@@ -383,7 +383,7 @@ export function GastosPage() {
               Cancelar
             </Button>
             <Button onClick={handleCrearActivo} disabled={guardandoActivo}>
-              Guardar
+              {guardandoActivo ? "Guardando..." : "Guardar"}
             </Button>
           </DialogFooter>
         </DialogContent>
