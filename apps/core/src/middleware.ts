@@ -8,6 +8,7 @@ export function middleware(request: NextRequest) {
     "https://lentejuelas-ventas.vercel.app",
   ];
 
+  // Manejar preflight CORS
   if (request.method === "OPTIONS") {
     return new NextResponse(null, {
       status: 204,
