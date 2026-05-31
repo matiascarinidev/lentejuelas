@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PedidoService } from "@/services/pedido.service";
-
+export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const resultado = await PedidoService.listar({
