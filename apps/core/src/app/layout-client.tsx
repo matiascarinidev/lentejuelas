@@ -7,6 +7,9 @@ import { AlertTriangle, ShoppingCart } from "lucide-react";
 export function LayoutClient({ children }: { children: React.ReactNode }) {
   const [alertas, setAlertas] = useState(0);
   const [pedidosPendientes, setPedidosPendientes] = useState(0);
+  const VENTAS_API =
+    process.env.NEXT_PUBLIC_VENTAS_API_URL ||
+    "https://lentejuelas-ventas.vercel.app/api";
 
   useEffect(() => {
     const fetchNotificaciones = () => {
@@ -17,9 +20,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
         })
         .catch(() => {});
 
-      fetch(
-        "https://lentejuelas-ventas.vercel.app/api/pedidos?estado=PENDIENTE"
-      )
+      fetch(`${VENTAS_API}/pedidos?estado=PENDIENTE`)
         .then((r) => r.json())
         .then((j) => {
           if (j.success) setPedidosPendientes(j.data.pedidos?.length || 0);
@@ -30,7 +31,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
     fetchNotificaciones();
     const interval = setInterval(fetchNotificaciones, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [VENTAS_API]);
 
   return (
     <main className="min-h-screen bg-gray-50">
