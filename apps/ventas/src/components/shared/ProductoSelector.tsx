@@ -36,7 +36,7 @@ export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
     fetchCore("/productos?limite=100&activo=true").then((data) => {
       if (data.success)
         setProductos(
-          data.productos?.map((p: any) => ({
+          data.data.productos?.map((p: any) => ({
             ...p,
             stockActual: p.stockActual || 0,
             unidadesPorPack: p.recetas?.[0]?.unidadesPorPack || null,
