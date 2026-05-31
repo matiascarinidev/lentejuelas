@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { AuditService } from "@/services/audit.service";
+
 export class MesaService {
   static async listar() {
     return prisma.mesa.findMany({
@@ -33,15 +34,17 @@ export class MesaService {
       },
       include: { items: true },
     });
+
+    await prisma.mesa.update({
+      where: { id: mesaId },
+      data: { estado: "OCUPADA" },
+    });
+
     await AuditService.registrar({
       accion: "ABRIR_COMANDA",
       entidad: "Comanda",
       entidadId: comanda.id,
       despues: { mesaId, items: [] },
-    });
-    await prisma.mesa.update({
-      where: { id: mesaId },
-      data: { estado: "OCUPADA" },
     });
 
     return comanda;
@@ -57,10 +60,33 @@ export class MesaService {
     }
   ) {
     if (data.esProductoPropio) {
-      await this.verificarStockProducto(data);
+      try {
+        const res = await fetch(
+          `http://localhost:3001/api/productos/${data.productoId}`
+        );
+        const json = await res.json();
+        if (json.success) {
+          const producto = json.data;
+          const unidadesPorPack = producto.recetas?.[0]?.unidadesPorPack || 1;
+          const stockNecesario = data.cantidad * unidadesPorPack;
+          if (producto.stockActual < stockNecesario) {
+            throw new Error(
+              `Stock insuficiente: ${producto.nombre} tiene ${
+                unidadesPorPack > 1
+                  ? Math.floor(producto.stockActual / unidadesPorPack) +
+                    " packs"
+                  : producto.stockActual + " unidades"
+              } disponibles.`
+            );
+          }
+        }
+      } catch (err: any) {
+        if (err.message.includes("Stock insuficiente")) throw err;
+      }
     }
 
-    const subtotal = this.calcularSubtotal(data.cantidad, data.precioUnitario);
+    const subtotal =
+      Math.round(data.cantidad * data.precioUnitario * 100) / 100;
 
     await prisma.comandaItem.create({
       data: {
@@ -73,83 +99,57 @@ export class MesaService {
       },
     });
 
-    const items = await this.obtenerItemsComanda(comandaId);
+    const items = await prisma.comandaItem.findMany({
+      where: { comandaId },
+    });
 
-    const total = this.calcularTotal(items);
+    const total = items.reduce((sum: number, i) => sum + Number(i.subtotal), 0);
 
     await prisma.comanda.update({
       where: { id: comandaId },
-      data: { total },
+      data: { total: Math.round(total * 100) / 100 },
     });
 
     return items;
-  }
-
-  private static async verificarStockProducto(data: {
-    productoId: string;
-    cantidad: number;
-  }) {
-    try {
-      const res = await fetch(
-        "http://localhost:3001/api/productos/" + data.productoId
-      );
-      const json = await res.json();
-      if (json.success) {
-        const producto = json.data;
-        const unidadesPorPack = producto.recetas?.[0]?.unidadesPorPack || 1;
-        const stockNecesario = data.cantidad * unidadesPorPack;
-        if (producto.stockActual < stockNecesario) {
-          throw new Error(
-            `Stock insuficiente: ${producto.nombre} tiene ${
-              unidadesPorPack > 1
-                ? Math.floor(producto.stockActual / unidadesPorPack) + " packs"
-                : producto.stockActual + " unidades"
-            } disponibles. Necesitás ${data.cantidad}${
-              unidadesPorPack > 1 ? " pack(s)" : ""
-            }.`
-          );
-        }
-      }
-    } catch (err: any) {
-      if (err.message.includes("Stock insuficiente")) throw err;
-      // Si no puede consultar Core, permitir igual (offline)
-    }
-  }
-
-  private static calcularSubtotal(
-    cantidad: number,
-    precioUnitario: number
-  ): number {
-    return Math.round(cantidad * precioUnitario * 100) / 100;
-  }
-
-  private static async obtenerItemsComanda(comandaId: string) {
-    return prisma.comandaItem.findMany({
-      where: { comandaId },
-    });
-  }
-
-  private static calcularTotal(items: any[]): number {
-    const total = items.reduce((sum, i) => sum + Number(i.subtotal), 0);
-    return Math.round(total * 100) / 100;
   }
 
   static async cerrarComanda(comandaId: string) {
     const comanda = await prisma.comanda.update({
       where: { id: comandaId },
       data: { estado: "CERRADA", fechaCierre: new Date() },
-      include: { mesa: true },
+      include: { mesa: true, items: true },
     });
+
+    await prisma.mesa.update({
+      where: { id: comanda.mesaId },
+      data: { estado: "LIBRE" },
+    });
+
+    if (comanda.items.length > 0) {
+      await prisma.ventaPOS.create({
+        data: {
+          total: comanda.total,
+          metodoPago: "EFECTIVO",
+          observacion: `Venta por comanda mesa #${comanda.mesa.numero}`,
+          items: {
+            create: comanda.items.map((item) => ({
+              productoId: item.productoId,
+              cantidad: item.cantidad,
+              precioUnitario: item.precioUnitario,
+              subtotal: item.subtotal,
+              esProductoPropio: item.esProductoPropio,
+            })),
+          },
+        },
+      });
+    }
+
     await AuditService.registrar({
       accion: "CERRAR_COMANDA",
       entidad: "Comanda",
       entidadId: comandaId,
       antes: { estado: "ABIERTA" },
       despues: { estado: "CERRADA", total: Number(comanda.total) },
-    });
-    await prisma.mesa.update({
-      where: { id: comanda.mesaId },
-      data: { estado: "LIBRE" },
     });
 
     return comanda;

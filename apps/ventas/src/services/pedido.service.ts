@@ -1,7 +1,14 @@
 import { prisma } from "@/lib/prisma";
+import { AuditService } from "@/services/audit.service";
 
 export class PedidoService {
-  static async listar(params?: { estado?: string; tipo?: string; clienteId?: string; pagina?: number; limite?: number }) {
+  static async listar(params?: {
+    estado?: string;
+    tipo?: string;
+    clienteId?: string;
+    pagina?: number;
+    limite?: number;
+  }) {
     const { estado, tipo, clienteId, pagina = 1, limite = 30 } = params || {};
     const where: any = {};
     if (estado) where.estado = estado;
@@ -21,7 +28,16 @@ export class PedidoService {
       }),
       prisma.pedido.count({ where }),
     ]);
-    return { pedidos, paginacion: { pagina, limite, total, totalPaginas: Math.ceil(total / limite) } };
+
+    return {
+      pedidos,
+      paginacion: {
+        pagina,
+        limite,
+        total,
+        totalPaginas: Math.ceil(total / limite),
+      },
+    };
   }
 
   static async crear(data: {
@@ -33,7 +49,8 @@ export class PedidoService {
   }) {
     let total = 0;
     const itemsConSubtotal = data.items.map((item) => {
-      const subtotal = Math.round(item.cantidad * item.precioUnitario * 100) / 100;
+      const subtotal =
+        Math.round(item.cantidad * item.precioUnitario * 100) / 100;
       total += subtotal;
       return { ...item, subtotal };
     });
@@ -52,9 +69,39 @@ export class PedidoService {
   }
 
   static async cambiarEstado(id: string, estado: string) {
-    return prisma.pedido.update({
+    const pedido = await prisma.pedido.update({
       where: { id },
       data: { estado: estado as any },
+      include: { items: true, cliente: true },
     });
+
+    if (estado === "ENTREGADO") {
+      await prisma.ventaPOS.create({
+        data: {
+          clienteId: pedido.clienteId,
+          total: pedido.total,
+          metodoPago: "OTRO",
+          observacion: `Venta automática por pedido #${pedido.id.slice(-8)}`,
+          items: {
+            create: pedido.items.map((item) => ({
+              productoId: item.productoId,
+              cantidad: item.cantidad,
+              precioUnitario: item.precioUnitario,
+              subtotal: item.subtotal,
+              esProductoPropio: true,
+            })),
+          },
+        },
+      });
+
+      await AuditService.registrar({
+        accion: "PEDIDO_ENTREGADO_A_VENTA",
+        entidad: "Pedido",
+        entidadId: id,
+        despues: { estado: "ENTREGADO", total: Number(pedido.total) },
+      });
+    }
+
+    return pedido;
   }
 }
