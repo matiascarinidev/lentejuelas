@@ -37,7 +37,7 @@ export function ProductoPage() {
   const [nuevaCategoria, setNuevaCategoria] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [itemADesactivar, setItemADesactivar] = useState<string | null>(null);
-
+  const [guardandoCat, setGuardandoCat] = useState(false);
   const fetchProductos = async () => {
     setCargando(true);
     const params = new URLSearchParams();
@@ -117,12 +117,14 @@ export function ProductoPage() {
 
   const handleCrearCategoria = async () => {
     if (!nuevaCategoria.trim()) return;
+    setGuardandoCat(true);
     await fetch("/api/categorias", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ nombre: nuevaCategoria }),
     });
     setNuevaCategoria("");
+    setGuardandoCat(false);
     setCatFormAbierto(false);
     fetchCategorias();
   };
@@ -236,7 +238,9 @@ export function ProductoPage() {
             <Button variant="outline" onClick={() => setCatFormAbierto(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleCrearCategoria}>Crear</Button>
+            <Button onClick={handleCrearCategoria} disabled={guardandoCat}>
+              {guardandoCat ? "Creando..." : "Crear"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

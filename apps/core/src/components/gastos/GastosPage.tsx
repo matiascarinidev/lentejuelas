@@ -46,6 +46,7 @@ export function GastosPage() {
   const [esManoDeObra, setEsManoDeObra] = useState(false);
   const [costoPorHora, setCostoPorHora] = useState("");
   const [guardando, setGuardando] = useState(false);
+  const [eliminando, setEliminando] = useState<string | null>(null);
 
   const handleCrearGasto = async () => {
     setGuardando(true);
@@ -74,7 +75,9 @@ export function GastosPage() {
   };
 
   const handleEliminarGasto = async (id: string) => {
+    setEliminando(id);
     await fetch(`/api/gastos-operativos/${id}`, { method: "DELETE" });
+    setEliminando(null);
     refetchGastos();
   };
 
@@ -83,7 +86,7 @@ export function GastosPage() {
   const [valorAdquisicion, setValorAdquisicion] = useState("");
   const [vidaUtilTandas, setVidaUtilTandas] = useState("");
   const [guardandoActivo, setGuardandoActivo] = useState(false);
-
+  const [toggling, setToggling] = useState<string | null>(null);
   const handleCrearActivo = async () => {
     setGuardandoActivo(true);
     try {
@@ -107,11 +110,13 @@ export function GastosPage() {
   };
 
   const handleToggleActivo = async (id: string, activo: boolean) => {
-    await fetch(`/api/gastos-operativos/activos/${id}/toggle`, {
+    setToggling(id);
+    await fetch(`/api/activos/${id}/toggle`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ activo }),
     });
+    setToggling(null);
     refetchActivos();
   };
 
@@ -186,6 +191,7 @@ export function GastosPage() {
                         size="sm"
                         variant="ghost"
                         onClick={() => handleEliminarGasto(g.id)}
+                        disabled={eliminando === g.id}
                       >
                         <Trash2 className="h-4 w-4 text-red-500" />
                       </Button>
@@ -254,6 +260,7 @@ export function GastosPage() {
                         size="sm"
                         variant="ghost"
                         onClick={() => handleToggleActivo(a.id, !a.activo)}
+                        disabled={toggling === a.id}
                       >
                         {a.activo ? (
                           <PowerOff className="h-4 w-4 text-red-500" />
@@ -326,7 +333,7 @@ export function GastosPage() {
               Cancelar
             </Button>
             <Button onClick={handleCrearGasto} disabled={guardando}>
-              Guardar
+              {guardando ? "Guardando..." : "Guardar"}
             </Button>
           </DialogFooter>
         </DialogContent>
