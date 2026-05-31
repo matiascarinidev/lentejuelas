@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { AuditService } from "@/services/audit.service";
+import { fetchCore } from "@/lib/api";
 
 export class MesaService {
   static async listar() {
@@ -28,10 +29,7 @@ export class MesaService {
 
   static async abrirComanda(mesaId: number, observacion?: string) {
     const comanda = await prisma.comanda.create({
-      data: {
-        mesaId,
-        observacion,
-      },
+      data: { mesaId, observacion },
       include: { items: true },
     });
 
@@ -61,12 +59,9 @@ export class MesaService {
   ) {
     if (data.esProductoPropio) {
       try {
-        const res = await fetch(
-          `http://localhost:3001/api/productos/${data.productoId}`
-        );
-        const json = await res.json();
-        if (json.success) {
-          const producto = json.data;
+        const res = await fetchCore(`/productos/${data.productoId}`);
+        if (res.success) {
+          const producto = res.data;
           const unidadesPorPack = producto.recetas?.[0]?.unidadesPorPack || 1;
           const stockNecesario = data.cantidad * unidadesPorPack;
           if (producto.stockActual < stockNecesario) {
@@ -99,10 +94,7 @@ export class MesaService {
       },
     });
 
-    const items = await prisma.comandaItem.findMany({
-      where: { comandaId },
-    });
-
+    const items = await prisma.comandaItem.findMany({ where: { comandaId } });
     const total = items.reduce((sum: number, i) => sum + Number(i.subtotal), 0);
 
     await prisma.comanda.update({
