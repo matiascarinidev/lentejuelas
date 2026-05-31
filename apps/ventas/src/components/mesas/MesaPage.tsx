@@ -264,7 +264,7 @@ export function MesaPage() {
                   disabled={cerrando}
                   className="bg-emerald-600 hover:bg-emerald-700"
                 >
-                  Cerrar y cobrar
+                  {cerrando ? "Cerrando..." : "Cerrar y cobrar"}
                 </Button>
               </div>
               {agregandoItems && (
