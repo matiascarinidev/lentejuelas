@@ -28,10 +28,17 @@ export function MesaPage() {
   const [creando, setCreando] = useState(false);
 
   const fetchMesas = async () => {
-    const res = await fetch("/api/mesas");
-    const json = await res.json();
-    if (json.success) setMesas(json.data);
-    setCargando(false);
+    try {
+      const res = await fetch("/api/mesas");
+      if (!res.ok) throw new Error(`Status ${res.status}`);
+      const json = await res.json();
+      if (json.success) setMesas(json.data);
+    } catch (err) {
+      console.error("Error al cargar mesas:", err);
+      setMesas([]);
+    } finally {
+      setCargando(false);
+    }
   };
 
   useEffect(() => {

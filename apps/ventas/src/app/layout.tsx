@@ -4,15 +4,16 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Lentejuelas - Core",
-  description: "Sistema de gestión de producción, stock y costos para emprendimientos gastronómicos.",
+  title: "Lentejuelas - Ventas",
+  description:
+    "Sistema de gestión de producción, stock y costos para emprendimientos gastronómicos.",
   openGraph: {
-    title: "Lentejuelas - Core",
+    title: "Lentejuelas - Ventas",
     description: "Gestión de producción, recetas, costos y stock.",
     type: "website",
     images: [
       {
-        url: "https://lentejuelas-core.vercel.app/og-image.png",
+        url: "https://lentejuelas-ventas.vercel.app/og-image.png",
         width: 1200,
         height: 630,
       },
@@ -20,9 +21,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lentejuelas - Core",
-    description: "Gestión de producción, recetas, costos y stock.",
-    images: ["https://lentejuelas-core.vercel.app/og-image.png"],
+    title: "Lentejuelas - Ventas",
+    description: "Sistema de ventas, pedidos y gestión de restaurante.",
+    images: ["https://lentejuelas-ventas.vercel.app/og-image.png"],
   },
 };
 

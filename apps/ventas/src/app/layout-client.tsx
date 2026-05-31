@@ -37,6 +37,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
           <span className="text-lg font-bold text-emerald-700">
             Lentejuelas
           </span>
+          Ventas
           <div className="flex items-center gap-3">
             {mesasOcupadas > 0 && (
               <Badge variant="default" className="flex items-center gap-1">
