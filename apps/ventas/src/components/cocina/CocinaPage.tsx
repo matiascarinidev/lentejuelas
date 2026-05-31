@@ -9,7 +9,7 @@ import { Loader2, ChefHat, Timer, CheckCircle } from "lucide-react";
 export function CocinaPage() {
   const [items, setItems] = useState<any[]>([]);
   const [cargando, setCargando] = useState(true);
-
+  const [cambiando, setCambiando] = useState<string | null>(null);
   const fetchItems = useCallback(async () => {
     const res = await fetch("/api/cocina");
     const json = await res.json();
@@ -24,11 +24,13 @@ export function CocinaPage() {
   }, [fetchItems]);
 
   const cambiarEstado = async (id: string, estado: string) => {
+    setCambiando(id);
     await fetch(`/api/cocina/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ estado }),
     });
+    setCambiando(null);
     fetchItems();
   };
 
@@ -99,17 +101,25 @@ export function CocinaPage() {
                     <Button
                       size="sm"
                       onClick={() => cambiarEstado(item.id, "EN_PREPARACION")}
+                      disabled={cambiando === item.id}
                     >
-                      Preparar
+                      {cambiando === item.id ? "..." : "Preparar"}
                     </Button>
                   )}
                   {item.estado === "EN_PREPARACION" && (
                     <Button
                       size="sm"
                       onClick={() => cambiarEstado(item.id, "LISTO")}
+                      disabled={cambiando === item.id}
                       className="bg-emerald-600 hover:bg-emerald-700"
                     >
-                      <CheckCircle className="mr-1 h-4 w-4" /> Listo
+                      {cambiando === item.id ? (
+                        "..."
+                      ) : (
+                        <>
+                          <CheckCircle className="mr-1 h-4 w-4" /> Listo
+                        </>
+                      )}
                     </Button>
                   )}
                 </div>

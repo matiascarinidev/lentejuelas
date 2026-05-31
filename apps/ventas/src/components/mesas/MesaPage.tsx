@@ -26,7 +26,8 @@ export function MesaPage() {
   const [agregandoItems, setAgregandoItems] = useState(false);
   const [itemsAdicionales, setItemsAdicionales] = useState<any[]>([]);
   const [creando, setCreando] = useState(false);
-
+  const [cerrando, setCerrando] = useState(false);
+  const [agregando, setAgregando] = useState(false);
   const fetchMesas = async () => {
     try {
       const res = await fetch("/api/mesas");
@@ -74,15 +75,18 @@ export function MesaPage() {
 
   const cerrarComanda = async () => {
     if (!comandaAbierta) return;
+    setCerrando(true);
     await fetch(`/api/comandas/${comandaAbierta.id}/cerrar`, {
       method: "POST",
     });
     setComandaAbierta(null);
+    setCerrando(false);
     fetchMesas();
   };
 
   const agregarItemsAComanda = async () => {
     if (!comandaAbierta || itemsAdicionales.length === 0) return;
+    setAgregando(true);
     for (const item of itemsAdicionales) {
       await fetch(`/api/comandas/${comandaAbierta.id}/items`, {
         method: "POST",
@@ -97,12 +101,12 @@ export function MesaPage() {
     }
     setAgregandoItems(false);
     setItemsAdicionales([]);
+    setAgregando(false);
     const res = await fetch(`/api/comandas/${comandaAbierta.id}`);
     const json = await res.json();
     if (json.success) setComandaAbierta(json.data);
     fetchMesas();
   };
-
   const estadoColor: Record<string, string> = {
     LIBRE: "bg-green-100 text-green-800",
     OCUPADA: "bg-red-100 text-red-800",
@@ -113,8 +117,14 @@ export function MesaPage() {
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Mesas</h1>
-        <Button onClick={crearMesa}>
-          <Plus className="mr-2 h-4 w-4" /> Agregar Mesa
+        <Button onClick={crearMesa} disabled={creando}>
+          {creando ? (
+            "Agregando..."
+          ) : (
+            <>
+              <Plus className="mr-2 h-4 w-4" /> Agregar Mesa
+            </>
+          )}
         </Button>
       </div>
 
@@ -251,6 +261,7 @@ export function MesaPage() {
                   variant="default"
                   size="sm"
                   onClick={cerrarComanda}
+                  disabled={cerrando}
                   className="bg-emerald-600 hover:bg-emerald-700"
                 >
                   Cerrar y cobrar
@@ -265,9 +276,9 @@ export function MesaPage() {
                   <Button
                     size="sm"
                     onClick={agregarItemsAComanda}
-                    disabled={itemsAdicionales.length === 0}
+                    disabled={itemsAdicionales.length === 0 || agregando}
                   >
-                    Agregar a comanda
+                    {agregando ? "Agregando..." : "Agregar a comanda"}
                   </Button>
                 </div>
               )}

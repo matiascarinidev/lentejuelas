@@ -29,7 +29,7 @@ export function ClientePage() {
   const [telefono, setTelefono] = useState("");
   const [email, setEmail] = useState("");
   const [direccion, setDireccion] = useState("");
-
+  const [guardando, setGuardando] = useState(false);
   const fetchClientes = async () => {
     const res = await fetch(`/api/clientes?q=${busqueda}`);
     const json = await res.json();
@@ -41,6 +41,7 @@ export function ClientePage() {
   }, [busqueda]);
 
   const handleCrear = async () => {
+    setGuardando(true);
     await fetch("/api/clientes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -51,6 +52,7 @@ export function ClientePage() {
         direccion: direccion || undefined,
       }),
     });
+    setGuardando(false);
     setFormAbierto(false);
     setNombre("");
     setTelefono("");
@@ -137,7 +139,9 @@ export function ClientePage() {
             <Button variant="outline" onClick={() => setFormAbierto(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleCrear}>Guardar</Button>
+            <Button onClick={handleCrear} disabled={guardando}>
+              {guardando ? "Guardando..." : "Guardar"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
