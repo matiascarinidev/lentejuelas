@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CategoriaService } from "@/services/categoria.service";
+
+
 export const dynamic = "force-dynamic";
 
 export async function POST(
