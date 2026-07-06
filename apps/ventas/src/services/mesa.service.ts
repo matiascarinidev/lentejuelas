@@ -52,6 +52,7 @@ export class MesaService {
     comandaId: string,
     data: {
       productoId: string;
+      nombre?: string | null;
       cantidad: number;
       precioUnitario: number;
       esProductoPropio?: boolean;
@@ -87,6 +88,7 @@ export class MesaService {
       data: {
         comandaId,
         productoId: data.productoId,
+        nombre: data.nombre || null,
         cantidad: data.cantidad,
         precioUnitario: data.precioUnitario,
         subtotal,
@@ -126,6 +128,7 @@ export class MesaService {
           items: {
             create: comanda.items.map((item) => ({
               productoId: item.productoId,
+              nombre: item.nombre,
               cantidad: item.cantidad,
               precioUnitario: item.precioUnitario,
               subtotal: item.subtotal,

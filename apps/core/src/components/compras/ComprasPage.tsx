@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, } from "lucide-react";
+import { Plus } from "lucide-react";
 import { ProveedorForm } from "@/components/proveedores/ProveedorForm";
 import { CompraForm } from "./CompraForm";
 import { useCompras } from "@/hooks/useCompras";
@@ -38,7 +38,7 @@ export function ComprasPage() {
   }, [compraFormAbierto]);
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6 p-4 md:p-6 xl:max-w-screen-2xl xl:m-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Compras y Proveedores</h1>

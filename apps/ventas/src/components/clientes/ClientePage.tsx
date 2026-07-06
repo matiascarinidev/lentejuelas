@@ -62,7 +62,7 @@ export function ClientePage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6 p-4 md:p-6 xl:max-w-screen-2xl xl:m-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Clientes</h1>
         <Button onClick={() => setFormAbierto(true)}>
@@ -82,7 +82,7 @@ export function ClientePage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nombre</TableHead>
+              <TableHead className="min-w-48">Nombre</TableHead>
               <TableHead>Teléfono</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Dirección</TableHead>

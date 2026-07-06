@@ -54,6 +54,7 @@ enum TipoPedido {
 
 model PedidoItem {
     id             String  @id @default(cuid())
+    nombre         String?
     pedidoId       String
     pedido         Pedido  @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
     productoId     String
@@ -99,15 +100,17 @@ enum EstadoComanda {
 }
 
 model ComandaItem {
-    id               String            @id @default(cuid())
-    comandaId        String
-    comanda          Comanda           @relation(fields: [comandaId], references: [id], onDelete: Cascade)
-    productoId       String
-    cantidad         Int
-    precioUnitario   Decimal           @db.Decimal(10, 2)
-    subtotal         Decimal           @db.Decimal(10, 2)
-    esProductoPropio Boolean           @default(true)
-    estado           EstadoItemComanda @default(PENDIENTE)
+  id               String            @id @default(cuid())
+  comandaId        String
+  comanda          Comanda           @relation(fields: [comandaId], references: [id], onDelete: Cascade)
+  productoId       String
+  nombre           String?
+  cantidad         Int
+  precioUnitario   Decimal           @db.Decimal(10, 2)
+  subtotal         Decimal           @db.Decimal(10, 2)
+  esProductoPropio Boolean           @default(true)
+  estado           EstadoItemComanda @default(PENDIENTE)
+  createdAt        DateTime          @default(now())
 }
 
 enum EstadoItemComanda {
@@ -140,6 +143,7 @@ enum MetodoPago {
 
 model VentaPOSItem {
     id               String   @id @default(cuid())
+    nombre           String?
     ventaPOSId       String
     ventaPOS         VentaPOS @relation(fields: [ventaPOSId], references: [id], onDelete: Cascade)
     productoId       String

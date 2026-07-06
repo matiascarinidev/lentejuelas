@@ -26,3 +26,21 @@
     --radius: 0.5rem;
   }
 }
+@media print {
+  @page {
+    size: 58mm auto;
+    margin: 0;
+  }
+  body {
+    width: 58mm;
+    margin: 0;
+    padding: 2mm;
+    font-family: monospace;
+    font-size: 10px;
+  }
+  nav,
+  button,
+  .no-print {
+    display: none !important;
+  }
+}

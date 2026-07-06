@@ -90,7 +90,7 @@ export function RecetaPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6 p-4 md:p-6 xl:max-w-screen-2xl xl:m-auto">
       <div className="flex flex-col gap-4 md:flex-row md:items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Recetas</h1>

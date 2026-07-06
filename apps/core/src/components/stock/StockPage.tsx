@@ -144,7 +144,7 @@ export function StockPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6 p-4 md:p-6 xl:max-w-screen-2xl xl:m-auto">
       <div>
         <h1 className="text-2xl font-bold">Stock</h1>
         <p className="text-sm text-gray-500 mt-1">

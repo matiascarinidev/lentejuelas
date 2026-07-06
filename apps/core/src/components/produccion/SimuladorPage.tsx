@@ -78,7 +78,7 @@ export function SimuladorPage() {
   const margenes = [30, 40, 50, 60, 70, 80];
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-6 xl:max-w-screen-2xl xl:m-auto">
       <div>
         <h1 className="text-2xl font-bold">Simulador de costos</h1>
         <p className="text-sm text-gray-500 mt-1">

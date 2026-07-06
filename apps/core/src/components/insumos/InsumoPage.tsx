@@ -84,7 +84,7 @@ export function InsumoPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6 p-4 md:p-6 xl:max-w-screen-2xl xl:m-auto">
       <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Insumos</h1>

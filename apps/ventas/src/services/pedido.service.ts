@@ -44,7 +44,12 @@ export class PedidoService {
     clienteId: string;
     tipo: string;
     fechaEntrega?: string;
-    items: { productoId: string; cantidad: number; precioUnitario: number }[];
+    items: {
+      productoId: string;
+      nombre?: string | null;
+      cantidad: number;
+      precioUnitario: number;
+    }[];
     observacion?: string;
   }) {
     let total = 0;
@@ -62,7 +67,15 @@ export class PedidoService {
         fechaEntrega: data.fechaEntrega ? new Date(data.fechaEntrega) : null,
         total: Math.round(total * 100) / 100,
         observacion: data.observacion,
-        items: { create: itemsConSubtotal },
+        items: {
+          create: itemsConSubtotal.map((item) => ({
+            productoId: item.productoId,
+            nombre: item.nombre || null,
+            cantidad: item.cantidad,
+            precioUnitario: item.precioUnitario,
+            subtotal: item.subtotal,
+          })),
+        },
       },
       include: { cliente: true, items: true },
     });
@@ -85,6 +98,7 @@ export class PedidoService {
           items: {
             create: pedido.items.map((item) => ({
               productoId: item.productoId,
+              nombre: item.nombre || null,
               cantidad: item.cantidad,
               precioUnitario: item.precioUnitario,
               subtotal: item.subtotal,

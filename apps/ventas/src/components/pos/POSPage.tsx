@@ -28,8 +28,8 @@ export function POSPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6 xl:max-w-screen-2xl xl:m-auto">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center justify-between">
         <h1 className="text-2xl font-bold">Punto de Venta</h1>
         <Button onClick={() => setFormAbierto(true)}>
           <Plus className="mr-2 h-4 w-4" /> Nueva Venta
@@ -39,7 +39,7 @@ export function POSPage() {
         {ventas.map((venta) => (
           <Card key={venta.id}>
             <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-2 md:flex-row md:items-center justify-between">
                 <div>
                   <CardTitle className="text-base">
                     {venta.cliente?.nombre || "Venta mostrador"}
@@ -50,7 +50,7 @@ export function POSPage() {
                     })}
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex md:items-center justify-between md:gap-3">
                   <Badge className={metodoColor[venta.metodoPago]}>
                     {venta.metodoPago}
                   </Badge>
@@ -62,9 +62,12 @@ export function POSPage() {
             </CardHeader>
             <CardContent>
               {venta.items.map((item: any) => (
-                <p key={item.id} className="text-sm text-gray-600">
-                  {item.cantidad}x Prod #{item.productoId.slice(-4)} — $
-                  {Number(item.subtotal).toFixed(2)}
+                <p
+                  key={item.id}
+                  className="text-sm text-gray-600 flex justify-between"
+                >
+                  {item.cantidad}x {item.nombre}
+                  <span>${Number(item.subtotal).toFixed(2)}</span>
                 </p>
               ))}
             </CardContent>

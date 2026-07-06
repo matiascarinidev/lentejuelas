@@ -1,11 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { AuditService } from "@/services/audit.service";
+
 export class POSService {
   static async crearVenta(data: {
     clienteId?: string;
     metodoPago?: string;
     items: {
       productoId: string;
+      nombre?: string | null;
       cantidad: number;
       precioUnitario: number;
       esProductoPropio?: boolean;
@@ -29,6 +31,7 @@ export class POSService {
         items: {
           create: itemsConSubtotal.map((i) => ({
             productoId: i.productoId,
+            nombre: i.nombre || null,
             cantidad: i.cantidad,
             precioUnitario: i.precioUnitario,
             subtotal: i.subtotal,

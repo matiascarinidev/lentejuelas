@@ -58,6 +58,7 @@ export function PedidoForm({ abierto, onClose, onSuccess }: PedidoFormProps) {
           fechaEntrega: fechaEntrega || undefined,
           items: items.map((i) => ({
             productoId: i.productoId,
+            nombre: i.nombre || null,
             cantidad: i.cantidad,
             precioUnitario: i.precioUnitario,
           })),
@@ -157,7 +158,7 @@ export function PedidoForm({ abierto, onClose, onSuccess }: PedidoFormProps) {
             <ProductoSelector items={items} onChange={setItems} />
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex gap-2">
           <Button variant="outline" onClick={onClose}>
             Cancelar
           </Button>

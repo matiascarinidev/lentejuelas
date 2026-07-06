@@ -52,6 +52,7 @@ export function ComandaForm({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             productoId: item.productoId,
+            nombre: item.nombre || null,
             cantidad: item.cantidad,
             precioUnitario: item.precioUnitario,
             esProductoPropio: true,
@@ -70,7 +71,7 @@ export function ComandaForm({
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg md:max-w-xl">
         <DialogHeader>
           <DialogTitle>Abrir comanda — Mesa #{mesaNumero}</DialogTitle>
         </DialogHeader>
@@ -88,7 +89,7 @@ export function ComandaForm({
             <ProductoSelector items={items} onChange={setItems} />
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex gap-2">
           <Button variant="outline" onClick={onClose}>
             Cancelar
           </Button>

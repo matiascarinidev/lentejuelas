@@ -13,9 +13,11 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Plus, Coffee, X, PlusCircle } from "lucide-react";
+import { Plus, Coffee, X, PlusCircle, CheckCircle } from "lucide-react";
 import { ComandaForm } from "./ComandaForm";
 import { ProductoSelector } from "@/components/shared/ProductoSelector";
+import { printTicket } from "@/lib/printTicket";
+import { fetchCore } from "@/lib/api";
 
 export function MesaPage() {
   const [mesas, setMesas] = useState<any[]>([]);
@@ -27,24 +29,43 @@ export function MesaPage() {
   const [itemsAdicionales, setItemsAdicionales] = useState<any[]>([]);
   const [creando, setCreando] = useState(false);
   const [cerrando, setCerrando] = useState(false);
-  const [agregando, setAgregando] = useState(false);
+  const [itemsListosPrevios, setItemsListosPrevios] = useState(0);
+
   const fetchMesas = async () => {
-    try {
-      const res = await fetch("/api/mesas");
-      if (!res.ok) throw new Error(`Status ${res.status}`);
-      const json = await res.json();
-      if (json.success) setMesas(json.data);
-    } catch (err) {
-      console.error("Error al cargar mesas:", err);
-      setMesas([]);
-    } finally {
-      setCargando(false);
-    }
+    const res = await fetch("/api/mesas");
+    const json = await res.json();
+    if (json.success) setMesas(json.data);
+    setCargando(false);
   };
 
   useEffect(() => {
     fetchMesas();
+    const interval = setInterval(fetchMesas, 15000);
+    return () => clearInterval(interval);
   }, []);
+
+  // Notificación sonora cuando aparecen nuevos items listos
+  useEffect(() => {
+    const totalListos = mesas.reduce((sum: number, mesa: any) => {
+      if (mesa.comandas?.length > 0) {
+        return (
+          sum +
+          mesa.comandas[0].items?.filter((item: any) => item.estado === "LISTO")
+            .length
+        );
+      }
+      return sum;
+    }, 0);
+
+    if (totalListos > itemsListosPrevios && itemsListosPrevios >= 0) {
+      try {
+        const audio = new Audio("/notification.mp3");
+        audio.play().catch(() => {});
+      } catch {}
+    }
+
+    setItemsListosPrevios(totalListos);
+  }, [mesas]);
 
   const crearMesa = async () => {
     setCreando(true);
@@ -54,9 +75,7 @@ export function MesaPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ numero }),
     });
-    if (res.ok) {
-      await fetchMesas();
-    }
+    if (res.ok) await fetchMesas();
     setCreando(false);
   };
 
@@ -73,12 +92,56 @@ export function MesaPage() {
     }
   };
 
+  const entregarItem = async (itemId: string) => {
+    await fetch(`/api/cocina/${itemId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ estado: "ENTREGADO" }),
+    });
+
+    if (comandaAbierta) {
+      const res = await fetch(`/api/comandas/${comandaAbierta.id}`);
+      const json = await res.json();
+      if (json.success) setComandaAbierta(json.data);
+    }
+    fetchMesas();
+  };
+
   const cerrarComanda = async () => {
     if (!comandaAbierta) return;
     setCerrando(true);
+
     await fetch(`/api/comandas/${comandaAbierta.id}/cerrar`, {
       method: "POST",
     });
+
+    if (comandaAbierta.items?.length > 0) {
+      const itemsParaDescontar = comandaAbierta.items.map((item: any) => ({
+        productoId: item.productoId,
+        cantidad: item.cantidad,
+      }));
+
+      await fetchCore("/stock/descontar", {
+        method: "POST",
+        body: JSON.stringify({ items: itemsParaDescontar }),
+      });
+    }
+
+    printTicket({
+      id: comandaAbierta.id,
+      fecha: new Date().toISOString(),
+      items: comandaAbierta.items.map((item: any) => ({
+        productoId: item.productoId,
+        nombre: item.nombre || undefined,
+        cantidad: item.cantidad,
+        precioUnitario: Number(item.precioUnitario),
+        subtotal: Number(item.subtotal),
+      })),
+      total: Number(comandaAbierta.total),
+      metodoPago: "EFECTIVO",
+      mesa: comandaAbierta.mesa?.numero,
+    });
+
     setComandaAbierta(null);
     setCerrando(false);
     fetchMesas();
@@ -86,27 +149,44 @@ export function MesaPage() {
 
   const agregarItemsAComanda = async () => {
     if (!comandaAbierta || itemsAdicionales.length === 0) return;
-    setAgregando(true);
-    for (const item of itemsAdicionales) {
-      await fetch(`/api/comandas/${comandaAbierta.id}/items`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productoId: item.productoId,
-          cantidad: item.cantidad,
-          precioUnitario: item.precioUnitario,
-          esProductoPropio: true,
-        }),
-      });
+
+    try {
+      for (const item of itemsAdicionales) {
+        const res = await fetch(`/api/comandas/${comandaAbierta.id}/items`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productoId: item.productoId,
+            nombre: item.nombre || null,
+            cantidad: item.cantidad,
+            precioUnitario: item.precioUnitario,
+            esProductoPropio: true,
+          }),
+        });
+
+        const json = await res.json();
+        if (!json.success) {
+          alert("Error al agregar item: " + json.error);
+          return;
+        }
+      }
+
+      setAgregandoItems(false);
+      setItemsAdicionales([]);
+
+      const res = await fetch(`/api/comandas/${comandaAbierta.id}`);
+      const json = await res.json();
+      if (json.success) setComandaAbierta(json.data);
+      fetchMesas();
+    } catch (err: any) {
+      alert("Error: " + err.message);
     }
-    setAgregandoItems(false);
-    setItemsAdicionales([]);
-    setAgregando(false);
-    const res = await fetch(`/api/comandas/${comandaAbierta.id}`);
-    const json = await res.json();
-    if (json.success) setComandaAbierta(json.data);
-    fetchMesas();
   };
+
+  const todosEntregados = comandaAbierta?.items?.every(
+    (item: any) => item.estado === "ENTREGADO" || item.estado === "CANCELADO"
+  );
+
   const estadoColor: Record<string, string> = {
     LIBRE: "bg-green-100 text-green-800",
     OCUPADA: "bg-red-100 text-red-800",
@@ -114,7 +194,7 @@ export function MesaPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6 p-4 md:p-6 xl:max-w-screen-2xl xl:m-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Mesas</h1>
         <Button onClick={crearMesa} disabled={creando}>
@@ -128,7 +208,7 @@ export function MesaPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:grid-cols-4">
         {cargando
           ? Array.from({ length: 6 }).map((_, i) => (
               <Card key={i}>
@@ -156,11 +236,54 @@ export function MesaPage() {
                 <CardContent>
                   {mesa.comandas?.length > 0 ? (
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">Comanda activa</p>
+                      <div className="flex flex-col gap-2 flex-wrap">
+                        <p className="text-sm font-medium">Comanda activa</p>
+                        <div className="flex flex-wrap gap-1 md:gap-2">
+                          {mesa.comandas[0].items?.filter(
+                            (item: any) => item.estado === "LISTO"
+                          ).length > 0 && (
+                            <Badge className="bg-emerald-100 text-emerald-800 animate-pulse text-xs">
+                              {
+                                mesa.comandas[0].items.filter(
+                                  (item: any) => item.estado === "LISTO"
+                                ).length
+                              }{" "}
+                              listo
+                            </Badge>
+                          )}
+                          {mesa.comandas[0].items?.filter(
+                            (item: any) =>
+                              item.estado === "PENDIENTE" || "EN_PREPARACION"
+                          ).length > 0 && (
+                            <Badge className="text-xs bg-amber-100 text-amber-800">
+                              {
+                                mesa.comandas[0].items.filter(
+                                  (item: any) =>
+                                    item.estado === "PENDIENTE" ||
+                                    "EN_PREPARACION"
+                                ).length
+                              }{" "}
+                              pendiente
+                            </Badge>
+                          )}
+                          {mesa.comandas[0].items?.filter(
+                            (item: any) => item.estado === "ENTREGADO"
+                          ).length > 0 && (
+                            <Badge variant="secondary" className="text-xs">
+                              {
+                                mesa.comandas[0].items.filter(
+                                  (item: any) => item.estado === "ENTREGADO"
+                                ).length
+                              }{" "}
+                              entregado
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
                       {mesa.comandas[0].items?.slice(0, 3).map((item: any) => (
                         <p key={item.id} className="text-sm text-gray-500">
-                          {item.cantidad}x Prod #{item.productoId.slice(-4)} — $
-                          {Number(item.subtotal).toFixed(2)}
+                          {item.cantidad}x{" "}
+                          {item.nombre || `Prod #${item.productoId.slice(-4)}`}
                         </p>
                       ))}
                       {mesa.comandas[0].items?.length > 3 && (
@@ -172,15 +295,13 @@ export function MesaPage() {
                         <span className="text-sm font-bold">
                           Total: ${Number(mesa.comandas[0].total).toFixed(2)}
                         </span>
-                        <div className="flex gap-1">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => verComanda(mesa)}
-                          >
-                            Ver
-                          </Button>
-                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => verComanda(mesa)}
+                        >
+                          Ver
+                        </Button>
                       </div>
                     </div>
                   ) : (
@@ -227,7 +348,7 @@ export function MesaPage() {
         open={!!comandaAbierta}
         onOpenChange={() => setComandaAbierta(null)}
       >
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg md:max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               Comanda — Mesa #{comandaAbierta?.mesa?.numero}
@@ -237,11 +358,50 @@ export function MesaPage() {
             <div className="space-y-4">
               <div className="space-y-2">
                 {comandaAbierta.items?.map((item: any) => (
-                  <div key={item.id} className="flex justify-between text-sm">
-                    <span>
-                      {item.cantidad}x Prod #{item.productoId.slice(-4)}
-                    </span>
-                    <span>${Number(item.subtotal).toFixed(2)}</span>
+                  <div
+                    key={item.id}
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm border-b pb-2"
+                  >
+                    <div>
+                      <Badge
+                        className={
+                          item.estado === "LISTO"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : item.estado === "EN_PREPARACION"
+                              ? "bg-blue-100 text-blue-800"
+                              : item.estado === "ENTREGADO"
+                                ? "bg-gray-100 text-gray-800"
+                                : "bg-amber-100 text-amber-800"
+                        }
+                      >
+                        {item.estado === "LISTO"
+                          ? "Listo"
+                          : item.estado === "EN_PREPARACION"
+                            ? "En preparación"
+                            : item.estado === "ENTREGADO"
+                              ? "Entregado"
+                              : "Pendiente"}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>
+                        {item.cantidad}x{" "}
+                        {item.nombre || `Prod #${item.productoId.slice(-4)}`}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>${Number(item.subtotal).toFixed(2)}</span>
+                      {item.estado === "LISTO" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-emerald-600 border-emerald-300 hover:bg-emerald-50 h-7 text-xs"
+                          onClick={() => entregarItem(item.id)}
+                        >
+                          <CheckCircle className="mr-1 h-3 w-3" /> Entregar
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -249,7 +409,7 @@ export function MesaPage() {
                 <span>Total</span>
                 <span>${Number(comandaAbierta.total).toFixed(2)}</span>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 <Button
                   variant="outline"
                   size="sm"
@@ -257,15 +417,21 @@ export function MesaPage() {
                 >
                   <PlusCircle className="mr-1 h-4 w-4" /> Agregar items
                 </Button>
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={cerrarComanda}
-                  disabled={cerrando}
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                >
-                  {cerrando ? "Cerrando..." : "Cerrar y cobrar"}
-                </Button>
+                {todosEntregados ? (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={cerrarComanda}
+                    disabled={cerrando}
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    {cerrando ? "Cerrando..." : "Cerrar y cobrar"}
+                  </Button>
+                ) : (
+                  <p className="text-xs text-amber-600 self-center">
+                    Entregá todos los items antes de cerrar
+                  </p>
+                )}
               </div>
               {agregandoItems && (
                 <div className="space-y-3 border-t pt-3">
@@ -276,9 +442,9 @@ export function MesaPage() {
                   <Button
                     size="sm"
                     onClick={agregarItemsAComanda}
-                    disabled={itemsAdicionales.length === 0 || agregando}
+                    disabled={itemsAdicionales.length === 0}
                   >
-                    {agregando ? "Agregando..." : "Agregar a comanda"}
+                    Agregar items a comanda
                   </Button>
                 </div>
               )}

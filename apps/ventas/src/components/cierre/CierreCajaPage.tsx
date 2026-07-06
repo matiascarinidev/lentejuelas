@@ -69,8 +69,8 @@ export function CierreCajaPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6 xl:max-w-screen-2xl xl:m-auto">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Cierre de Caja</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -78,27 +78,29 @@ export function CierreCajaPage() {
               format(new Date(data.fecha), "EEEE d 'de' MMMM", { locale: es })}
           </p>
         </div>
-        <Button onClick={imprimir} variant="outline">
-          <Printer className="mr-2 h-4 w-4" /> Imprimir
-        </Button>
-        <Button
-          onClick={() => {
-            if (data?.ventas) {
-              exportToCSV(
-                `cierre-caja-${new Date().toISOString().split("T")[0]}`,
-                data.ventas.map((v: any) => ({
-                  Hora: format(new Date(v.fecha), "HH:mm", { locale: es }),
-                  Cliente: v.cliente?.nombre || "Mostrador",
-                  Metodo: v.metodoPago,
-                  Total: Number(v.total).toFixed(2),
-                }))
-              );
-            }
-          }}
-          variant="outline"
-        >
-          Exportar CSV
-        </Button>
+        <div className="flex flex-col md:flex-row gap-4">
+          <Button onClick={imprimir} variant="outline">
+            <Printer className="mr-2 h-4 w-4" /> Imprimir
+          </Button>
+          <Button
+            onClick={() => {
+              if (data?.ventas) {
+                exportToCSV(
+                  `cierre-caja-${new Date().toISOString().split("T")[0]}`,
+                  data.ventas.map((v: any) => ({
+                    Hora: format(new Date(v.fecha), "HH:mm", { locale: es }),
+                    Cliente: v.cliente?.nombre || "Mostrador",
+                    Metodo: v.metodoPago,
+                    Total: Number(v.total).toFixed(2),
+                  }))
+                );
+              }
+            }}
+            variant="outline"
+          >
+            Exportar CSV
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

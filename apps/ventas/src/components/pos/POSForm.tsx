@@ -75,10 +75,11 @@ export function POSForm({ abierto, onClose, onSuccess }: POSFormProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          clienteId: clienteId || undefined,
+          clienteId: clienteId === "__mostrador" ? null : clienteId || null,
           metodoPago,
           items: items.map((i) => ({
             productoId: i.productoId,
+            nombre: i.nombre || null,
             cantidad: i.cantidad,
             precioUnitario: i.precioUnitario,
             esProductoPropio: true,
@@ -86,7 +87,10 @@ export function POSForm({ abierto, onClose, onSuccess }: POSFormProps) {
           observacion: observacion || undefined,
         }),
       });
-
+      if (!resVenta.ok) {
+        const errorText = await resVenta.text();
+        throw new Error(errorText || "Error al crear venta");
+      }
       const jsonVenta = await resVenta.json();
       if (!jsonVenta.success) throw new Error(jsonVenta.error);
 

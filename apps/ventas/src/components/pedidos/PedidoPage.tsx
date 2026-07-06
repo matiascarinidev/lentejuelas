@@ -15,6 +15,7 @@ import {
 import { Plus } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { printTicket } from "@/lib/printTicket";
 
 export function PedidoPage() {
   const [pedidos, setPedidos] = useState<any[]>([]);
@@ -40,6 +41,27 @@ export function PedidoPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ estado }),
     });
+
+    if (estado === "LISTO") {
+      const pedido = pedidos.find((p: any) => p.id === id);
+      if (pedido) {
+        printTicket({
+          id: pedido.id,
+          fecha: new Date().toISOString(),
+          items: pedido.items.map((item: any) => ({
+            productoId: item.productoId,
+            nombre: item.nombre || undefined,
+            cantidad: item.cantidad,
+            precioUnitario: Number(item.precioUnitario),
+            subtotal: Number(item.subtotal),
+          })),
+          total: Number(pedido.total),
+          metodoPago: "PENDIENTE",
+          cliente: pedido.cliente,
+        });
+      }
+    }
+
     fetchPedidos();
   };
 
@@ -52,14 +74,14 @@ export function PedidoPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6 xl:max-w-screen-2xl xl:m-auto">
+      <div className="flex flex-col gap-4 md:flex-row  md:items-center justify-between">
         <h1 className="text-2xl font-bold">Pedidos</h1>
         <Button onClick={() => setFormAbierto(true)}>
           <Plus className="mr-2 h-4 w-4" /> Nuevo Pedido
         </Button>
       </div>
-      <div className="w-48">
+      <div className="w-full md:w-48">
         <Select value={filtroEstado} onValueChange={setFiltroEstado}>
           <SelectTrigger>
             <SelectValue placeholder="Todos los estados" />
@@ -78,7 +100,13 @@ export function PedidoPage() {
         {pedidos.map((pedido) => (
           <Card key={pedido.id}>
             <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-row gap-2 md:self-end">
+                <Badge>{pedido.tipo}</Badge>
+                <Badge className={estadoColor[pedido.estado]}>
+                  {pedido.estado}
+                </Badge>
+              </div>
+              <div className="flex flex-col gap-4 md:flex-row  md:items-center justify-between">
                 <div>
                   <CardTitle className="text-base">
                     {pedido.cliente.nombre}
@@ -91,11 +119,7 @@ export function PedidoPage() {
                       ` — Entrega: ${format(new Date(pedido.fechaEntrega), "dd/MM", { locale: es })}`}
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Badge>{pedido.tipo}</Badge>
-                  <Badge className={estadoColor[pedido.estado]}>
-                    {pedido.estado}
-                  </Badge>
+                <div>
                   <span className="font-bold">
                     ${Number(pedido.total).toFixed(2)}
                   </span>
@@ -106,7 +130,7 @@ export function PedidoPage() {
               <div className="space-y-1 mb-3">
                 {pedido.items.map((item: any) => (
                   <p key={item.id} className="text-sm text-gray-600">
-                    {item.cantidad}x Prod #{item.productoId.slice(-4)} — $
+                    {item.cantidad}x {item.nombre} — $
                     {Number(item.subtotal).toFixed(2)}
                   </p>
                 ))}

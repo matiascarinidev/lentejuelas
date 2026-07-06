@@ -127,7 +127,7 @@ export function GastosPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6 p-4 md:p-6xl:max-w-screen-2xl xl:m-auto">
       <div className="flex flex-col gap-4 md:flex-row items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Gastos y Amortizaciones</h1>
