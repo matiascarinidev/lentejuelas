@@ -64,7 +64,7 @@ export function ProveedorForm({
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {proveedor ? "Editar Proveedor" : "Nuevo Proveedor"}
@@ -79,7 +79,7 @@ export function ProveedorForm({
               required
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Contacto</Label>
               <Input

@@ -29,8 +29,8 @@ export function ProduccionPage() {
   }, []);
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Producción</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -44,7 +44,7 @@ export function ProduccionPage() {
       </div>
 
       {dashboard && (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-gray-500">

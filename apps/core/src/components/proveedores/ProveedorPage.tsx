@@ -56,23 +56,23 @@ export function ProveedorPage() {
   };
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Proveedores</h1>
           <p className="text-sm text-gray-500 mt-1">
             Gestión de proveedores de insumos
           </p>
         </div>
-        <Button
-          onClick={() => {
-            setProveedorEditar(null);
-            setFormAbierto(true);
-          }}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Nuevo Proveedor
-        </Button>
+          <Button
+            onClick={() => {
+              setProveedorEditar(null);
+              setFormAbierto(true);
+            }}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Nuevo Proveedor
+          </Button>
       </div>
 
       <div className="relative">

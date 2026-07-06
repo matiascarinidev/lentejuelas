@@ -38,23 +38,25 @@ export function ComprasPage() {
   }, [compraFormAbierto]);
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Compras y Proveedores</h1>
           <p className="text-sm text-gray-500 mt-1">
             Registro de compras de insumos y gestión de proveedores
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-4 justify-around md:gap-2 pt-4">
           <Button
             variant="outline"
             onClick={() => setProveedorFormAbierto(true)}
           >
-            <Plus className="mr-2 h-4 w-4" /> Proveedor
+            <Plus className=" md:h-4 md:w-4" /> Proveedor
           </Button>
           <Button onClick={() => setCompraFormAbierto(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Nueva Compra
+            <Plus className="md:h-4 md:w-4" />
+            {""}
+            <span className="hidden md:inline">Nueva</span> Compra
           </Button>
         </div>
       </div>
@@ -83,9 +85,7 @@ export function ComprasPage() {
         </div>
       )}
 
-      {cargando && (
-          <TableSkeleton columns={6} rows={8} />
-      )}
+      {cargando && <TableSkeleton columns={6} rows={8} />}
 
       {!cargando && compras.length === 0 && (
         <div className="text-center py-12 space-y-4">
@@ -102,21 +102,21 @@ export function ComprasPage() {
             <Card key={compra.id}>
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <CardTitle className="text-base">
-                      {compra.proveedor?.nombre || "Compra sin proveedor"}
-                    </CardTitle>
-                    <Badge variant="outline" className="text-xs">
-                      {format(new Date(compra.fecha), "dd/MM/yyyy", {
-                        locale: es,
-                      })}
-                    </Badge>
-                    <span className="text-xs text-gray-400 font-mono">
-                      #{compra.id.slice(-8)}
-                    </span>
-                  </div>
+                  <CardTitle className="text-base">
+                    {compra.proveedor?.nombre || "Compra sin proveedor"}
+                  </CardTitle>
+                  <Badge variant="outline" className="text-xs">
+                    {format(new Date(compra.fecha), "dd/MM/yyyy", {
+                      locale: es,
+                    })}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-400 font-mono">
+                    #{compra.id.slice(-8)}
+                  </span>
                   <span className="text-lg font-bold">
-                    ${Number(compra.total).toFixed(2)}
+                    ${Number(compra.total).toFixed(0)}
                   </span>
                 </div>
               </CardHeader>
@@ -128,10 +128,15 @@ export function ComprasPage() {
                       className="flex justify-between text-sm text-gray-600"
                     >
                       <span>
-                        {item.insumo.nombre} — {Number(item.cantidadCompra)}{" "}
-                        {item.insumo.unidadCompra}
+                        {item.insumo.nombre} — {Number(item.cantidadCompra)}
+                        <span className="hidden md:inline">
+                          {item.insumo.unidadCompra}
+                        </span>
+                        <span className="md:hidden">
+                          {item.insumo.unidadCompra?.charAt(0)}
+                        </span>
                       </span>
-                      <span>${Number(item.precioUnitario).toFixed(2)} c/u</span>
+                      <span>${Number(item.precioUnitario).toFixed(0)} c/u</span>
                     </div>
                   ))}
                 </div>

@@ -89,7 +89,7 @@ export function SimuladorPage() {
 
       <Card>
         <CardContent className="pt-6 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Producto</Label>
               <Select value={productoId} onValueChange={setProductoId}>
@@ -136,7 +136,7 @@ export function SimuladorPage() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Cantidad planificada (unidades)</Label>
               <Input
@@ -197,7 +197,7 @@ export function SimuladorPage() {
         <div className="space-y-6">
           <Card className="border-emerald-200 bg-emerald-50">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col md:flex-row items-center justify-between">
                 <span className="font-bold text-lg text-emerald-900">
                   Costo total tanda
                 </span>
@@ -240,7 +240,7 @@ export function SimuladorPage() {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card>
               <CardContent className="pt-3 pb-3">
                 <div className="flex justify-between items-center">
@@ -290,7 +290,7 @@ export function SimuladorPage() {
 
           <Card>
             <CardContent className="pt-4">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col md:flex-row gap-4  md:items-center justify-between mb-4">
                 <h4 className="text-sm font-bold">Precio de venta sugerido</h4>
                 <div className="flex items-center gap-2">
                   <Label className="text-xs">Margen:</Label>
@@ -315,7 +315,7 @@ export function SimuladorPage() {
               {simulacion.cantidadPacks > 0 ? (
                 <div className="space-y-3">
                   <div className="rounded-lg bg-emerald-50 p-4">
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col md:flex-row justify-between items-center">
                       <span className="text-sm">
                         Pack de{" "}
                         {Math.ceil(
@@ -332,7 +332,7 @@ export function SimuladorPage() {
                         ).toFixed(2)}
                       </span>
                     </div>
-                    <p className="text-xs text-emerald-600 mt-1">
+                    <p className="text-xs text-center md:text-right text-emerald-600 mt-1">
                       Ganancia: $
                       {(
                         simulacion.costoPackCompleto *
@@ -409,13 +409,19 @@ export function SimuladorPage() {
                       >
                         <span>{item.nombre}</span>
                         <span className="text-right">
-                          {item.cantidadNecesaria.toFixed(2)} {item.unidad}
+                          {item.cantidadNecesaria.toFixed(0)}
+                          <span className="hidden md:inline">
+                            {item.unidad}
+                          </span>
+                          <span className="md:hidden">
+                            {item.unidad.charAt(0)}
+                          </span>
                         </span>
                         <span className="text-right text-gray-500">
-                          ${item.costoUnitarioInsumo.toFixed(4)}
+                          ${item.costoUnitarioInsumo.toFixed(0)}
                         </span>
                         <span className="text-right font-medium">
-                          ${item.costoTotalItem.toFixed(2)}
+                          ${item.costoTotalItem.toFixed(0)}
                         </span>
                       </div>
                     ))}
@@ -447,13 +453,19 @@ export function SimuladorPage() {
                       >
                         <span>{item.nombre}</span>
                         <span className="text-right">
-                          {item.cantidadNecesaria.toFixed(2)} {item.unidad}
+                          {item.cantidadNecesaria.toFixed(0)}
+                          <span className="hidden md:inline">
+                            {item.unidad}
+                          </span>
+                          <span className="md:hidden">
+                            {item.unidad.charAt(0)}
+                          </span>
                         </span>
                         <span className="text-right text-gray-500">
-                          ${item.costoUnitarioInsumo.toFixed(4)}
+                          ${item.costoUnitarioInsumo.toFixed(0)}
                         </span>
                         <span className="text-right font-medium">
-                          ${item.costoTotalItem.toFixed(2)}
+                          ${item.costoTotalItem.toFixed(0)}
                         </span>
                       </div>
                     ))}

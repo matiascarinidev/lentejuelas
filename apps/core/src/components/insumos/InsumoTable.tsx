@@ -57,109 +57,122 @@ export function InsumoTable({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [itemADesactivar, setItemADesactivar] = useState<string | null>(null);
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Nombre</TableHead>
-          <TableHead>Tipo</TableHead>
-          <TableHead className="text-center">Stock</TableHead>
-          <TableHead className="text-center">Stock Mín.</TableHead>
-          <TableHead className="text-right">Costo Unit.</TableHead>
-          <TableHead>Proveedor</TableHead>
-          <TableHead className="text-center">Estado</TableHead>
-          <TableHead className="text-right">Acciones</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {insumos.map((insumo) => {
-          const stockBajo = Number(insumo.stockActual) <= Number(insumo.stockMinimo);
-          return (
-            <TableRow
-              key={insumo.id}
-              className={!insumo.activo ? "opacity-50" : ""}
-            >
-              <TableCell className="font-medium">
-                <div className="flex items-center gap-2">
-                  {stockBajo && insumo.activo && (
-                    <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0" />
-                  )}
-                  {insumo.nombre}
-                </div>
-              </TableCell>
-              <TableCell>
-                <Badge className={tipoColorMap[insumo.tipo] || ""}>
-                  {insumo.tipo.replace("_", " ")}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-center">
-                <span
-                  className={
-                    stockBajo && insumo.activo
-                      ? "text-amber-600 font-medium"
-                      : ""
-                  }
-                >
-                  {Number(insumo.stockActual).toFixed(2)} {insumo.unidadBase}
-                </span>
-              </TableCell>
-              <TableCell className="text-center">
-                {Number(insumo.stockMinimo).toFixed(0)}
-              </TableCell>
-              <TableCell className="text-right">
-                ${Number(insumo.costoUnitarioEstimado).toFixed(2)}
-              </TableCell>
-              <TableCell>{insumo.proveedor?.nombre || "—"}</TableCell>
-              <TableCell className="text-center">
-                <Badge variant={insumo.activo ? "default" : "destructive"}>
-                  {insumo.activo ? "Activo" : "Inactivo"}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end gap-1">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => onEditar(insumo)}
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Nombre</TableHead>
+            <TableHead>Tipo</TableHead>
+            <TableHead className="text-center min-w-32">Stock</TableHead>
+            <TableHead className="text-center min-w-36">Stock Mín.</TableHead>
+            <TableHead className="text-right min-w-36">Costo Unit.</TableHead>
+            <TableHead className="text-center min-w-36">Proveedor</TableHead>
+            <TableHead className="text-center min-w-24">Estado</TableHead>
+            <TableHead className="text-right min-w-24">Acciones</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {insumos.map((insumo) => {
+            const stockBajo =
+              Number(insumo.stockActual) <= Number(insumo.stockMinimo);
+            return (
+              <TableRow
+                key={insumo.id}
+                className={!insumo.activo ? "opacity-50" : ""}
+              >
+                <TableCell className="font-medium">
+                  <div className="flex items-center gap-2 min-w-32">
+                    {stockBajo && insumo.activo && (
+                      <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0" />
+                    )}
+                    {insumo.nombre}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    className={`min-w-36 ${tipoColorMap[insumo.tipo] || ""}`}
                   >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  {insumo.activo ? (
+                    {insumo.tipo.replace("_", " ")}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  <span
+                    className={
+                      stockBajo && insumo.activo
+                        ? "text-amber-600 font-medium"
+                        : ""
+                    }
+                  >
+                    {Number(insumo.stockActual).toFixed(0)}{" "}
+                    <span className="hidden lg:inline">
+                      {insumo.unidadBase}
+                    </span>
+                    <span className="lg:hidden">
+                      {insumo.unidadBase.charAt(0)}
+                    </span>
+                  </span>
+                </TableCell>
+                <TableCell className="text-center">
+                  {Number(insumo.stockMinimo).toFixed(0)}
+                </TableCell>
+                <TableCell className="text-right">
+                  ${Number(insumo.costoUnitarioEstimado).toFixed(2)}
+                </TableCell>
+                <TableCell className="text-center">
+                  {insumo.proveedor?.nombre || "—"}
+                </TableCell>
+                <TableCell className="text-center">
+                  <Badge variant={insumo.activo ? "default" : "destructive"}>
+                    {insumo.activo ? "Activo" : "Inactivo"}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-1">
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => onDesactivar(insumo.id)}
+                      onClick={() => onEditar(insumo)}
                     >
-                      <Trash2 className="h-4 w-4 text-red-500" />
+                      <Pencil className="h-4 w-4" />
                     </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => onActivar(insumo.id)}
-                    >
-                      <RotateCcw className="h-4 w-4 text-green-500" />
-                    </Button>
-                  )}
-                  <ConfirmDialog
-                    abierto={confirmOpen}
-                    onClose={() => setConfirmOpen(false)}
-                    onConfirm={async () => {
-                      if (itemADesactivar) {
-                        onDesactivar(itemADesactivar);
-                        setItemADesactivar(null);
-                      }
-                    }}
-                    titulo="¿Desactivar?"
-                    descripcion="El elemento se ocultará pero no se eliminará permanentemente."
-                    textoConfirmar="Desactivar"
-                    variante="destructive"
-                  />
-                </div>
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+                    {insumo.activo ? (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => onDesactivar(insumo.id)}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => onActivar(insumo.id)}
+                      >
+                        <RotateCcw className="h-4 w-4 text-green-500" />
+                      </Button>
+                    )}
+                    <ConfirmDialog
+                      abierto={confirmOpen}
+                      onClose={() => setConfirmOpen(false)}
+                      onConfirm={async () => {
+                        if (itemADesactivar) {
+                          onDesactivar(itemADesactivar);
+                          setItemADesactivar(null);
+                        }
+                      }}
+                      titulo="¿Desactivar?"
+                      descripcion="El elemento se ocultará pero no se eliminará permanentemente."
+                      textoConfirmar="Desactivar"
+                      variante="destructive"
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

@@ -169,12 +169,12 @@ export function CompraForm({
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Nueva Compra</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Proveedor (opcional)</Label>
               <Select value={proveedorId} onValueChange={setProveedorId}>
@@ -236,8 +236,8 @@ export function CompraForm({
                 return (
                   <Card key={item.tempId}>
                     <CardContent className="pt-4">
-                      <div className="grid grid-cols-12 gap-3 items-end">
-                        <div className="col-span-5">
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                        <div className="md:col-span-5">
                           <Label className="text-xs">Insumo</Label>
                           <Select
                             value={item.insumoId}
@@ -257,7 +257,7 @@ export function CompraForm({
                             </SelectContent>
                           </Select>
                         </div>
-                        <div className="col-span-2">
+                        <div className="md:col-span-2">
                           <Label className="text-xs">
                             Cantidad ({insumo?.unidadCompra || "—"})
                           </Label>
@@ -275,7 +275,7 @@ export function CompraForm({
                             }
                           />
                         </div>
-                        <div className="col-span-2">
+                        <div className="md:col-span-2">
                           <Label className="text-xs">Precio Unit.</Label>
                           <Input
                             type="number"
@@ -291,13 +291,13 @@ export function CompraForm({
                             }
                           />
                         </div>
-                        <div className="col-span-2">
+                        <div className="md:col-span-2">
                           <Label className="text-xs">Subtotal</Label>
                           <p className="text-sm font-medium py-2">
                             ${subtotal.toFixed(2)}
                           </p>
                         </div>
-                        <div className="col-span-1">
+                        <div className="md:col-span-1">
                           <Button
                             type="button"
                             size="icon"

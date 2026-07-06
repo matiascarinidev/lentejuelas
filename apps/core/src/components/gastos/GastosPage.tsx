@@ -27,6 +27,13 @@ import { useGastosOperativos, useActivos } from "@/hooks/useGastos";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { TableSkeleton } from "../ui/table-skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function GastosPage() {
   const [tab, setTab] = useState("operativos");
@@ -121,8 +128,8 @@ export function GastosPage() {
   };
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col gap-4 md:flex-row items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Gastos y Amortizaciones</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -130,9 +137,24 @@ export function GastosPage() {
           </p>
         </div>
       </div>
-
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList>
+        <div className="md:hidden">
+          <Select value={tab} onValueChange={(value) => setTab(value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+              <SelectValue placeholder="Gastos Operativos" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem key={tab} value="operativos">
+                Gastos Operativos
+              </SelectItem>
+              <SelectItem key={tab} value="activos">
+                Activos Amortizables
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <TabsList className="hidden md:inline">
           <TabsTrigger value="operativos">Gastos Operativos</TabsTrigger>
           <TabsTrigger value="activos">Activos Amortizables</TabsTrigger>
         </TabsList>
@@ -150,13 +172,21 @@ export function GastosPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Concepto</TableHead>
-                  <TableHead className="text-right">Monto</TableHead>
-                  <TableHead className="text-center">Prorrateable</TableHead>
-                  <TableHead className="text-center">Mano de Obra</TableHead>
-                  <TableHead className="text-right">Costo/Hora</TableHead>
-                  <TableHead>Fecha</TableHead>
-                  <TableHead className="text-right">Acción</TableHead>
+                  <TableHead className="min-w-32">Concepto</TableHead>
+                  <TableHead className="text-center min-w-24">Monto</TableHead>
+                  <TableHead className="text-center min-w-24">
+                    Prorrateable
+                  </TableHead>
+                  <TableHead className="text-center min-w-32">
+                    Mano de Obra
+                  </TableHead>
+                  <TableHead className="text-right min-w-24">
+                    Costo/Hora
+                  </TableHead>
+                  <TableHead className="min-w-24 text-center">Fecha</TableHead>
+                  <TableHead className="text-right md:text-center min-w-24">
+                    Acción
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -178,7 +208,7 @@ export function GastosPage() {
                         "—"
                       )}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
                       {g.costoPorHora
                         ? `$${Number(g.costoPorHora).toFixed(2)}`
                         : "—"}
@@ -186,7 +216,7 @@ export function GastosPage() {
                     <TableCell className="text-sm">
                       {format(new Date(g.fecha), "dd/MM/yy", { locale: es })}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
                       <Button
                         size="sm"
                         variant="ghost"
@@ -218,15 +248,19 @@ export function GastosPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Descripción</TableHead>
-                  <TableHead className="text-right">Valor</TableHead>
-                  <TableHead className="text-center">
+                  <TableHead className="min-w-36">Descripción</TableHead>
+                  <TableHead className="text-center min-w-36">Valor</TableHead>
+                  <TableHead className="text-center min-w-24 md:min-w-40">
                     Vida útil (tandas)
                   </TableHead>
-                  <TableHead className="text-center">Tandas acum.</TableHead>
-                  <TableHead className="text-right">Costo/tanda</TableHead>
+                  <TableHead className="text-center min-w-24 md:min-w-36">
+                    Tandas acum.
+                  </TableHead>
+                  <TableHead className="text-center">Costo/tanda</TableHead>
                   <TableHead className="text-center">Estado</TableHead>
-                  <TableHead className="text-right">Acción</TableHead>
+                  <TableHead className="text-right lg:text-center">
+                    Acción
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -238,7 +272,7 @@ export function GastosPage() {
                     <TableCell className="font-medium">
                       {a.descripcion}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
                       ${Number(a.valorAdquisicion).toFixed(2)}
                     </TableCell>
                     <TableCell className="text-center">
@@ -247,7 +281,7 @@ export function GastosPage() {
                     <TableCell className="text-center">
                       {a.tandasAcumuladas}
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
                       ${Number(a.costoPorTanda).toFixed(2)}
                     </TableCell>
                     <TableCell className="text-center">
@@ -255,7 +289,7 @@ export function GastosPage() {
                         {a.activo ? "Activo" : "Inactivo"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-center">
                       <Button
                         size="sm"
                         variant="ghost"
@@ -341,7 +375,7 @@ export function GastosPage() {
 
       {/* Dialog nuevo activo */}
       <Dialog open={formActivoAbierto} onOpenChange={setFormActivoAbierto}>
-        <DialogContent>
+        <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Nuevo Activo Amortizable</DialogTitle>
           </DialogHeader>

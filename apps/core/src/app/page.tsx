@@ -1,5 +1,11 @@
 "use client";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardPage } from "@/components/dashboard/DashboardPage";
 import { ProductoPage } from "@/components/productos/ProductoPage";
@@ -16,15 +22,15 @@ import { useState } from "react";
 
 const tabs = [
   { value: "dashboard", label: "Dashboard" },
-  { value: "produccion", label: "Producción" },
   { value: "compras", label: "Compras" },
   { value: "stock", label: "Stock" },
+  { value: "insumos", label: "Insumos" },
+  { value: "produccion", label: "Producción" },
+  { value: "simulador", label: "Simulador" },
   { value: "productos", label: "Productos" },
   { value: "recetas", label: "Recetas" },
-  { value: "insumos", label: "Insumos" },
   { value: "gastos", label: "Gastos" },
   { value: "proveedores", label: "Proveedores" },
-  { value: "simulador", label: "Simulador" },
 ];
 
 export default function Home() {
@@ -33,7 +39,7 @@ export default function Home() {
   return (
     <LayoutClient>
       <div>
-        <div className="border-b bg-white px-6 overflow-x-auto">
+        <div className="hidden lg:block border-b bg-white px-6 overflow-x-auto">
           <Tabs value={tab} onValueChange={setTab}>
             <TabsList className="w-full justify-start gap-6 rounded-none border-b-0 bg-transparent p-0 flex-nowrap">
               {tabs.map((t) => (
@@ -47,6 +53,20 @@ export default function Home() {
               ))}
             </TabsList>
           </Tabs>
+        </div>
+        <div className="lg:hidden border-b bg-white px-4 py-2">
+          <Select value={tab} onValueChange={setTab}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {tabs.map((t) => (
+                <SelectItem key={t.value} value={t.value}>
+                  {t.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         {tab === "dashboard" && <DashboardPage />}
         {tab === "produccion" && <ProduccionPage />}

@@ -35,25 +35,30 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <nav className="border-b bg-white px-6 py-3">
-        <div className="flex items-center justify-between">
+      <nav className="border-b bg-white px-4 md:px-6 py-3">
+        <div className="flex items-center">
           <span className="text-lg font-bold text-emerald-700">
             Lentejuelas
           </span>
-          <div className="flex items-center gap-3">
+          Core
+          <div className="flex items-center gap-2 md:gap-3">
             {pedidosPendientes > 0 && (
               <Badge
                 variant="outline"
                 className="flex items-center gap-1 border-amber-300 text-amber-700"
               >
                 <ShoppingCart className="h-3 w-3" />
-                {pedidosPendientes} pedidos
+                <span className="hidden md:inline">
+                  {pedidosPendientes} pedidos
+                </span>
+                <span className="md:hidden">{pedidosPendientes}</span> pedidos
               </Badge>
             )}
             {alertas > 0 && (
               <Badge variant="destructive" className="flex items-center gap-1">
                 <AlertTriangle className="h-3 w-3" />
-                {alertas} stock bajo
+                <span className="hidden md:inline">{alertas} stock bajo</span>
+                <span className="md:hidden">{alertas} </span> stock bajo
               </Badge>
             )}
           </div>

@@ -1,10 +1,17 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Search, AlertTriangle } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { InsumoTable } from "./InsumoTable";
 import { InsumoForm } from "./InsumoForm";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -18,7 +25,7 @@ import { InsumoResponse } from "@/types/insumo";
 
 export function InsumoPage() {
   const [busqueda, setBusqueda] = useState("");
-  const [filtroTipo, setFiltroTipo] = useState<string>("");
+  const [filtroTipo, setFiltroTipo] = useState<string>("TODOS");
   const [formAbierto, setFormAbierto] = useState(false);
   const [insumoEditar, setInsumoEditar] = useState<InsumoResponse | null>(null);
   const [proveedores, setProveedores] = useState<
@@ -29,7 +36,7 @@ export function InsumoPage() {
 
   const { insumos, cargando, error, refetch } = useInsumos({
     busqueda: busqueda || undefined,
-    tipo: filtroTipo || undefined,
+    tipo: filtroTipo === "TODOS" ? undefined : filtroTipo,
     activo: undefined,
   });
 
@@ -77,8 +84,8 @@ export function InsumoPage() {
   };
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Insumos</h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -96,8 +103,8 @@ export function InsumoPage() {
         </Button>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1">
+      <div className="flex flex-col md:flex-row items-center gap-4">
+        <div className="relative flex-1 w-full">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
             placeholder="Buscar insumos..."
@@ -106,15 +113,34 @@ export function InsumoPage() {
             className="pl-10"
           />
         </div>
-        <Tabs value={filtroTipo} onValueChange={setFiltroTipo}>
-          <TabsList>
-            <TabsTrigger value="">Todos</TabsTrigger>
-            <TabsTrigger value="MATERIA_PRIMA">Materia Prima</TabsTrigger>
-            <TabsTrigger value="ENVASE">Envases</TabsTrigger>
-            <TabsTrigger value="ETIQUETA">Etiquetas</TabsTrigger>
-            <TabsTrigger value="OPERATIVO">Operativos</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="hidden md:inline">
+          <Tabs value={filtroTipo} onValueChange={setFiltroTipo}>
+            <TabsList>
+              <TabsTrigger value="TODOS">Todos</TabsTrigger>
+              <TabsTrigger value="MATERIA_PRIMA">Materia Prima</TabsTrigger>
+              <TabsTrigger value="ENVASE">Envases</TabsTrigger>
+              <TabsTrigger value="ETIQUETA">Etiquetas</TabsTrigger>
+              <TabsTrigger value="OPERATIVO">Operativos</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        <div className="md:hidden w-full">
+          <Select
+            value={filtroTipo}
+            onValueChange={(value) => setFiltroTipo(value)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TODOS">Todos</SelectItem>
+              <SelectItem value="MATERIA_PRIMA">Materia Prima</SelectItem>
+              <SelectItem value="ENVASE">Envases</SelectItem>
+              <SelectItem value="ETIQUETA">Etiquetas</SelectItem>
+              <SelectItem value="OPERATIVO">Operativos</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {error && (

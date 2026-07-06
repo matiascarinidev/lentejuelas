@@ -203,7 +203,7 @@ export function ProduccionForm({
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto max-w-lg md:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Nueva Producción</DialogTitle>
         </DialogHeader>
@@ -435,7 +435,7 @@ export function ProduccionForm({
                 </CardContent>
               </Card>
 
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                 <Card>
                   <CardContent className="pt-3 pb-3">
                     <div className="flex justify-between items-center">
@@ -611,7 +611,7 @@ export function ProduccionForm({
               {simulacion.stockSuficiente && (
                 <div className="space-y-3">
                   <Separator />
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label>Cantidad real producida</Label>
                       <Input

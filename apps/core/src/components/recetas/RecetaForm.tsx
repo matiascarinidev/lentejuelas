@@ -277,7 +277,7 @@ export function RecetaForm({
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {esEdicion ? "Editar Receta" : "Nueva Receta"}
@@ -401,8 +401,8 @@ export function RecetaForm({
               return (
                 <Card key={item.tempId}>
                   <CardContent className="pt-4">
-                    <div className="grid grid-cols-12 gap-3 items-end">
-                      <div className="col-span-5">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                      <div className="md:col-span-5">
                         <Label className="text-xs">Insumo</Label>
                         <Select
                           value={item.insumoId}
@@ -426,7 +426,7 @@ export function RecetaForm({
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="col-span-2">
+                      <div className="md:col-span-2">
                         <Label className="text-xs">Cantidad</Label>
                         <InputValidated
                           type="number"
@@ -443,7 +443,7 @@ export function RecetaForm({
                           required
                         />
                       </div>
-                      <div className="col-span-2">
+                      <div className="md:col-span-2">
                         <Label className="text-xs">Unidad</Label>
                         <Select
                           value={item.unidad}
@@ -463,7 +463,7 @@ export function RecetaForm({
                           </SelectContent>
                         </Select>
                       </div>
-                      <div className="col-span-2">
+                      <div className="md:col-span-2">
                         <Label className="text-xs">Merma %</Label>
                         <InputValidated
                           type="number"
@@ -480,7 +480,7 @@ export function RecetaForm({
                           }
                         />
                       </div>
-                      <div className="col-span-1">
+                      <div className="md:col-span-1">
                         <Button
                           type="button"
                           size="icon"
@@ -504,7 +504,7 @@ export function RecetaForm({
             })}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Rendimiento base (unidades que produce)</Label>
               <InputValidated
@@ -593,8 +593,8 @@ export function RecetaForm({
                       className="border-amber-200 bg-amber-50/30"
                     >
                       <CardContent className="pt-4">
-                        <div className="grid grid-cols-12 gap-3 items-end">
-                          <div className="col-span-6">
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                          <div className="md:col-span-6">
                             <Label className="text-xs">
                               Insumo de packaging
                             </Label>
@@ -620,7 +620,7 @@ export function RecetaForm({
                               </SelectContent>
                             </Select>
                           </div>
-                          <div className="col-span-2">
+                          <div className="md:col-span-2">
                             <Label className="text-xs">Cantidad</Label>
                             <InputValidated
                               type="number"
@@ -637,7 +637,7 @@ export function RecetaForm({
                               required
                             />
                           </div>
-                          <div className="col-span-3">
+                          <div className="md:col-span-3">
                             <Label className="text-xs">Unidad</Label>
                             <Select
                               value={item.unidad}
@@ -661,7 +661,7 @@ export function RecetaForm({
                               </SelectContent>
                             </Select>
                           </div>
-                          <div className="col-span-1">
+                          <div className="md:col-span-1">
                             <Button
                               type="button"
                               size="icon"

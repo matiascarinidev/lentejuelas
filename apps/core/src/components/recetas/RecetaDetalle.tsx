@@ -47,9 +47,9 @@ export function RecetaDetalle({
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex flex-col md:flex-row md:items-center gap-2 text-lg">
             {receta ? (
               <>
                 {receta.producto.nombre}
@@ -79,9 +79,12 @@ export function RecetaDetalle({
 
         {receta && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Badge variant="outline">{receta.producto.categoria}</Badge>
+            {/* Badges y acciones */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="outline">
+                  {receta.producto.categoria?.nombre || "Sin categoría"}
+                </Badge>
                 <Badge variant="secondary">
                   Rinde {receta.rendimientoBase}u
                 </Badge>
@@ -96,7 +99,8 @@ export function RecetaDetalle({
                     className="flex items-center gap-1"
                   >
                     <GitBranch className="h-3 w-3" />
-                    Variante de: {receta.recetaBase?.producto.nombre}
+                    <span className="hidden sm:inline">Variante de:</span>{" "}
+                    {receta.recetaBase?.producto.nombre}
                   </Badge>
                 )}
                 {!receta.activa && (
@@ -110,7 +114,8 @@ export function RecetaDetalle({
                     variant="outline"
                     onClick={() => onEditar(receta)}
                   >
-                    <Pencil className="mr-1 h-4 w-4" /> Editar
+                    <Pencil className="mr-1 h-4 w-4" />
+                    <span className="hidden sm:inline">Editar</span>
                   </Button>
                 )}
                 {onDuplicar && (
@@ -119,12 +124,14 @@ export function RecetaDetalle({
                     variant="outline"
                     onClick={() => onDuplicar(receta)}
                   >
-                    <Copy className="mr-1 h-4 w-4" /> Duplicar
+                    <Copy className="mr-1 h-4 w-4" />
+                    <span className="hidden sm:inline">Duplicar</span>
                   </Button>
                 )}
               </div>
             </div>
 
+            {/* Heredados */}
             {receta.itemsHeredados && receta.itemsHeredados.length > 0 && (
               <Card>
                 <CardHeader className="pb-2">
@@ -134,7 +141,10 @@ export function RecetaDetalle({
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {receta.itemsHeredados.map((item: any) => (
-                    <div key={item.id} className="flex justify-between text-sm">
+                    <div
+                      key={item.id}
+                      className="flex flex-col sm:flex-row sm:justify-between text-sm gap-1"
+                    >
                       <span>{item.insumo.nombre}</span>
                       <span className="text-gray-500">
                         {Number(item.cantidad).toFixed(2)} {item.unidad}
@@ -147,6 +157,7 @@ export function RecetaDetalle({
               </Card>
             )}
 
+            {/* Ingredientes */}
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -164,7 +175,10 @@ export function RecetaDetalle({
                   </p>
                 )}
                 {receta.items.map((item: any) => (
-                  <div key={item.id} className="flex justify-between text-sm">
+                  <div
+                    key={item.id}
+                    className="flex flex-col sm:flex-row sm:justify-between text-sm gap-1"
+                  >
                     <span>{item.insumo.nombre}</span>
                     <span className="text-gray-500">
                       {Number(item.cantidad).toFixed(2)} {item.unidad}
@@ -176,6 +190,7 @@ export function RecetaDetalle({
               </CardContent>
             </Card>
 
+            {/* Packaging */}
             {(receta.itemsPackaging?.length > 0 ||
               receta.itemsHeredadosPackaging?.length > 0) && (
               <Card className="border-amber-200 bg-amber-50/30">
@@ -186,7 +201,10 @@ export function RecetaDetalle({
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {receta.itemsHeredadosPackaging?.map((item: any) => (
-                    <div key={item.id} className="flex justify-between text-sm">
+                    <div
+                      key={item.id}
+                      className="flex flex-col sm:flex-row sm:justify-between text-sm gap-1"
+                    >
                       <span>{item.insumo.nombre} (heredado)</span>
                       <span className="text-gray-500">
                         {Number(item.cantidad)} {item.unidad}
@@ -194,7 +212,10 @@ export function RecetaDetalle({
                     </div>
                   ))}
                   {receta.itemsPackaging?.map((item: any) => (
-                    <div key={item.id} className="flex justify-between text-sm">
+                    <div
+                      key={item.id}
+                      className="flex flex-col sm:flex-row sm:justify-between text-sm gap-1"
+                    >
                       <span>{item.insumo.nombre}</span>
                       <span className="text-gray-500">
                         {Number(item.cantidad)} {item.unidad}
@@ -208,7 +229,7 @@ export function RecetaDetalle({
             <Separator />
 
             <div className="rounded-lg bg-emerald-50 p-4">
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <span className="text-sm font-medium text-emerald-900">
                   Costo total calculado
                 </span>

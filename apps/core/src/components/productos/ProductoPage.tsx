@@ -130,10 +130,10 @@ export function ProductoPage() {
   };
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center justify-between">
         <h1 className="text-2xl font-bold">Productos</h1>
-        <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-4">
           <Button variant="outline" onClick={() => setCatFormAbierto(true)}>
             <Tags className="mr-2 h-4 w-4" /> Categorías
           </Button>
@@ -148,7 +148,7 @@ export function ProductoPage() {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col md:flex-row md:items-center gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
@@ -159,7 +159,7 @@ export function ProductoPage() {
           />
         </div>
         <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-full md:w-48">
             <SelectValue placeholder="Todas las categorías" />
           </SelectTrigger>
           <SelectContent>
@@ -172,11 +172,11 @@ export function ProductoPage() {
           </SelectContent>
         </Select>
         <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Todos" />
+          <SelectTrigger className="w-full md:w-40">
+            <SelectValue placeholder="Todos los tipos" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="__todos">Todos</SelectItem>
+            <SelectItem value="__todos">Todos los tipos</SelectItem>
             <SelectItem value="propio">Propios</SelectItem>
             <SelectItem value="tercero">Terceros</SelectItem>
           </SelectContent>
@@ -234,12 +234,12 @@ export function ProductoPage() {
               </div>
             )}
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setCatFormAbierto(false)}>
-              Cancelar
-            </Button>
+          <DialogFooter className="flex flex-col gap-2">
             <Button onClick={handleCrearCategoria} disabled={guardandoCat}>
               {guardandoCat ? "Creando..." : "Crear"}
+            </Button>
+            <Button variant="outline" onClick={() => setCatFormAbierto(false)}>
+              Cancelar
             </Button>
           </DialogFooter>
         </DialogContent>

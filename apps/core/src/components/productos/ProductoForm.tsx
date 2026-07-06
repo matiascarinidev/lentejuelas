@@ -139,7 +139,7 @@ export function ProductoForm({
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {producto ? "Editar Producto" : "Nuevo Producto"}
@@ -220,7 +220,7 @@ export function ProductoForm({
                   )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label>Margen de ganancia (%)</Label>
                   <Select
@@ -340,12 +340,12 @@ export function ProductoForm({
             </p>
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancelar
-            </Button>
+          <DialogFooter className="flex flex-col gap-2">
             <Button type="submit" disabled={guardando}>
               {guardando ? "Guardando..." : "Guardar"}
+            </Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancelar
             </Button>
           </DialogFooter>
         </form>

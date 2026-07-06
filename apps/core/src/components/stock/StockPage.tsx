@@ -144,7 +144,7 @@ export function StockPage() {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-4 md:p-6">
       <div>
         <h1 className="text-2xl font-bold">Stock</h1>
         <p className="text-sm text-gray-500 mt-1">
@@ -153,7 +153,7 @@ export function StockPage() {
       </div>
 
       {dashboard && (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-gray-500">
@@ -204,9 +204,9 @@ export function StockPage() {
         </TabsList>
 
         <TabsContent value="insumos" className="space-y-4 mt-4">
-          <div className="flex items-center gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 mb-4" />
               <Input
                 placeholder="Buscar insumos..."
                 value={busqueda}
@@ -215,7 +215,7 @@ export function StockPage() {
               />
             </div>
             <Select value={filtroTipo} onValueChange={setFiltroTipo}>
-              <SelectTrigger className="w-48">
+              <SelectTrigger className="w-full md:w-48">
                 <SelectValue placeholder="Todos" />
               </SelectTrigger>
               <SelectContent>
@@ -232,76 +232,102 @@ export function StockPage() {
               <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Insumo</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead className="text-right">Stock</TableHead>
-                  <TableHead className="text-right">Stock Mín.</TableHead>
-                  <TableHead className="text-right">Costo Unit.</TableHead>
-                  <TableHead className="text-right">Valor Stock</TableHead>
-                  <TableHead>Proveedor</TableHead>
-                  <TableHead className="text-center">Estado</TableHead>
-                  <TableHead className="text-right">Ajustar</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {insumos.map((item: any) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">
-                      <div className="flex items-center gap-2">
-                        {item.stockBajo && (
-                          <AlertTriangle className="h-4 w-4 text-amber-500" />
-                        )}
-                        {item.nombre}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={tipoColorMap[item.tipo] || ""}>
-                        {item.tipo?.replace("_", " ")}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span
-                        className={
-                          item.stockBajo ? "text-amber-600 font-medium" : ""
-                        }
-                      >
-                        {item.stockActual?.toFixed(2)} {item.unidad}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {item.stockMinimo?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      ${item.costoUnitario?.toFixed(4)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      ${item.valorStock?.toFixed(2)}
-                    </TableCell>
-                    <TableCell>{item.proveedor || "—"}</TableCell>
-                    <TableCell className="text-center">
-                      {item.stockBajo ? (
-                        <Badge variant="destructive">Bajo</Badge>
-                      ) : (
-                        <Badge variant="default">OK</Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => abrirAjuste(item, "INSUMO")}
-                        title="Ajustar stock"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Insumo</TableHead>
+                    <TableHead className="text-left">Tipo</TableHead>
+                    <TableHead className="text-right md:text-center min-w-24 md:min-w-36">
+                      Stock
+                    </TableHead>
+                    <TableHead className="text-right md:text-center min-w-32">
+                      Stock Mín.
+                    </TableHead>
+                    <TableHead className="text-right min-w-32">
+                      Costo Unit.
+                    </TableHead>
+                    <TableHead className="text-center min-w-24">
+                      Valor Stock
+                    </TableHead>
+                    <TableHead className="text-center md:min-w-36">
+                      Proveedor
+                    </TableHead>
+                    <TableHead className="text-center min-w-24">
+                      Estado
+                    </TableHead>
+                    <TableHead className="text-right md:text-center min-w-24">
+                      Ajustar
+                    </TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {insumos.map((item: any) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2 min-w-32">
+                          {item.stockBajo && (
+                            <AlertTriangle className="h-4 w-4 text-amber-500" />
+                          )}
+                          {item.nombre}
+                        </div>
+                      </TableCell>
+                      <TableCell className="min-w-48">
+                        <Badge className={tipoColorMap[item.tipo] || ""}>
+                          {item.tipo?.replace("_", " ")}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right  md:text-center">
+                        <span
+                          className={
+                            item.stockBajo ? "text-amber-600 font-medium" : ""
+                          }
+                        >
+                          {item.stockActual?.toFixed(0)}{" "}
+                          <span className="hidden lg:inline">
+                            {" "}
+                            {item.unidad}
+                          </span>
+                          <span className="lg:hidden">
+                            {" "}
+                            {item.unidad.charAt(0)}
+                          </span>
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right md:text-center">
+                        {item.stockMinimo?.toFixed(0)}
+                      </TableCell>
+                      <TableCell className="text-right  md:text-center">
+                        ${item.costoUnitario?.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right  md:text-center">
+                        ${item.valorStock?.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="md:text-center">
+                        {item.proveedor || "—"}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {item.stockBajo ? (
+                          <Badge variant="destructive">Bajo</Badge>
+                        ) : (
+                          <Badge variant="default">OK</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right  md:text-center">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => abrirAjuste(item, "INSUMO")}
+                          title="Ajustar stock"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </TabsContent>
 
@@ -321,51 +347,63 @@ export function StockPage() {
               <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Producto</TableHead>
-                  <TableHead>Categoría</TableHead>
-                  <TableHead className="text-center">Propio</TableHead>
-                  <TableHead className="text-right">Stock</TableHead>
-                  <TableHead className="text-right">Precio Venta</TableHead>
-                  <TableHead className="text-right">Valor Stock</TableHead>
-                  <TableHead className="text-right">Ajustar</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {productos.map((item: any) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.nombre}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{item.categoria}</Badge>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {item.esProduccionPropia ? "Sí" : "No"}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {item.stockActual}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      ${item.precioVentaSugerido?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      ${item.valorStock?.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => abrirAjuste(item, "PRODUCTO")}
-                        title="Ajustar stock"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Producto</TableHead>
+                    <TableHead>Categoría</TableHead>
+                    <TableHead className="text-center min-w-24">
+                      Propio
+                    </TableHead>
+                    <TableHead className="text-right min-w-24">Stock</TableHead>
+                    <TableHead className="text-right min-w-32">
+                      Precio Venta
+                    </TableHead>
+                    <TableHead className="text-right min-w-32">
+                      Valor Stock
+                    </TableHead>
+                    <TableHead className="text-right min-w-24">
+                      Ajustar
+                    </TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {productos.map((item: any) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-medium flex min-w-48 ">
+                        {item.nombre}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{item.categoria}</Badge>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {item.esProduccionPropia ? "Sí" : "No"}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {item.stockActual}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        ${item.precioVentaSugerido?.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        ${item.valorStock?.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => abrirAjuste(item, "PRODUCTO")}
+                          title="Ajustar stock"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </TabsContent>
 
@@ -390,51 +428,60 @@ export function StockPage() {
               <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Fecha</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Item</TableHead>
-                  <TableHead className="text-right">Cantidad</TableHead>
-                  <TableHead>Observación</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {movimientos.map((mov: any) => (
-                  <TableRow key={mov.id}>
-                    <TableCell className="text-sm whitespace-nowrap">
-                      {format(new Date(mov.fecha), "dd/MM HH:mm", {
-                        locale: es,
-                      })}
-                    </TableCell>
-                    <TableCell>
-                      {mov.tipo === "ENTRADA" ? (
-                        <Badge className="bg-green-100 text-green-800 flex items-center gap-1 w-fit">
-                          <ArrowDown className="h-3 w-3" /> Entrada
-                        </Badge>
-                      ) : (
-                        <Badge className="bg-red-100 text-red-800 flex items-center gap-1 w-fit">
-                          <ArrowUp className="h-3 w-3" /> Salida
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <span className="font-medium">{mov.itemNombre}</span>
-                      <span className="text-xs text-gray-400 ml-2">
-                        ({mov.itemTipo})
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {mov.cantidad?.toFixed(2)} {mov.unidad}
-                    </TableCell>
-                    <TableCell className="text-xs text-gray-500 max-w-xs truncate">
-                      {mov.observacion || "—"}
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Tipo</TableHead>
+                    <TableHead className="min-w-48 md:text-center md:min-w-72">
+                      Item
+                    </TableHead>
+                    <TableHead className="text-right">Cantidad</TableHead>
+                    <TableHead>Observación</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {movimientos.map((mov: any) => (
+                    <TableRow key={mov.id}>
+                      <TableCell className="text-sm whitespace-nowrap">
+                        {format(new Date(mov.fecha), "dd/MM HH:mm", {
+                          locale: es,
+                        })}
+                      </TableCell>
+                      <TableCell>
+                        {mov.tipo === "ENTRADA" ? (
+                          <Badge className="bg-green-100 text-green-800 flex items-center gap-1 w-fit">
+                            <ArrowDown className="h-3 w-3" /> Entrada
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-red-100 text-red-800 flex items-center gap-1 w-fit">
+                            <ArrowUp className="h-3 w-3" /> Salida
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="m-w-48 md:min-w-72 lg:w-fit">
+                        <span className="font-medium">{mov.itemNombre}</span>
+                        <span className="text-xs text-gray-400 ml-2">
+                          ({mov.itemTipo})
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {mov.cantidad?.toFixed(0)}
+                        <span className="hidden lg:inline"> {mov.unidad} </span>
+                        <span className="lg:hidden">
+                          {" "}
+                          {mov.unidad.charAt(0)}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-xs text-gray-500 max-w-xs truncate">
+                        {mov.observacion || "—"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </TabsContent>
       </Tabs>
