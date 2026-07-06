@@ -62,7 +62,7 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
         {mesasOcupadas > 0 && (
           <Badge variant="default" className="flex items-center gap-1">
             <Coffee className="h-3 w-3" />
-            <span className="hidden md:inline">{mesasOcupadas} mesas</span>
+            <span className="hidden md:inline">{mesasOcupadas}</span>
             <span className="md:hidden">{mesasOcupadas}</span> mesas
           </Badge>
         )}
