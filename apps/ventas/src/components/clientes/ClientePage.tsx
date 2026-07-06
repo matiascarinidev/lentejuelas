@@ -5,19 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Plus, Search, Pencil, Trash2, RotateCcw, Loader2 } from "lucide-react";
@@ -50,9 +41,7 @@ export function ClientePage() {
     setCargando(false);
   };
 
-  useEffect(() => {
-    fetchClientes();
-  }, [busqueda]);
+  useEffect(() => { fetchClientes(); }, [busqueda]);
 
   const abrirForm = (cliente?: any) => {
     if (cliente) {
@@ -75,19 +64,12 @@ export function ClientePage() {
     if (!nombre.trim()) return;
     setGuardando(true);
     try {
-      const url = clienteEditar
-        ? `/api/clientes/${clienteEditar.id}`
-        : "/api/clientes";
+      const url = clienteEditar ? `/api/clientes/${clienteEditar.id}` : "/api/clientes";
       const method = clienteEditar ? "PATCH" : "POST";
       await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nombre,
-          telefono: telefono || undefined,
-          email: email || undefined,
-          direccion: direccion || undefined,
-        }),
+        body: JSON.stringify({ nombre, telefono: telefono || undefined, email: email || undefined, direccion: direccion || undefined }),
       });
       setFormAbierto(false);
       fetchClientes();
@@ -154,19 +136,13 @@ export function ClientePage() {
             <TableBody>
               {clientes.length === 0 ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="text-center text-gray-500 py-8"
-                  >
+                  <TableCell colSpan={6} className="text-center text-gray-500 py-8">
                     No se encontraron clientes.
                   </TableCell>
                 </TableRow>
               ) : (
                 clientes.map((c) => (
-                  <TableRow
-                    key={c.id}
-                    className={!c.activo ? "opacity-50" : ""}
-                  >
+                  <TableRow key={c.id} className={!c.activo ? "opacity-50" : ""}>
                     <TableCell className="font-medium">{c.nombre}</TableCell>
                     <TableCell>{c.telefono || "—"}</TableCell>
                     <TableCell>{c.email || "—"}</TableCell>
@@ -178,27 +154,15 @@ export function ClientePage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => abrirForm(c)}
-                        >
+                        <Button size="sm" variant="ghost" onClick={() => abrirForm(c)}>
                           <Pencil className="h-4 w-4" />
                         </Button>
                         {c.activo ? (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleDesactivarClick(c.id)}
-                          >
+                          <Button size="sm" variant="ghost" onClick={() => handleDesactivarClick(c.id)}>
                             <Trash2 className="h-4 w-4 text-red-500" />
                           </Button>
                         ) : (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => handleActivar(c.id)}
-                          >
+                          <Button size="sm" variant="ghost" onClick={() => handleActivar(c.id)}>
                             <RotateCcw className="h-4 w-4 text-green-500" />
                           </Button>
                         )}
@@ -215,47 +179,30 @@ export function ClientePage() {
       <Dialog open={formAbierto} onOpenChange={setFormAbierto}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>
-              {clienteEditar ? "Editar Cliente" : "Nuevo Cliente"}
-            </DialogTitle>
+            <DialogTitle>{clienteEditar ? "Editar Cliente" : "Nuevo Cliente"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
               <Label>Nombre</Label>
-              <Input
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                required
-              />
+              <Input value={nombre} onChange={(e) => setNombre(e.target.value)} required />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label>Teléfono</Label>
-                <Input
-                  value={telefono}
-                  onChange={(e) => setTelefono(e.target.value)}
-                />
+                <Input value={telefono} onChange={(e) => setTelefono(e.target.value)} />
               </div>
               <div>
                 <Label>Email</Label>
-                <Input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                <Input value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
             </div>
             <div>
               <Label>Dirección</Label>
-              <Input
-                value={direccion}
-                onChange={(e) => setDireccion(e.target.value)}
-              />
+              <Input value={direccion} onChange={(e) => setDireccion(e.target.value)} />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setFormAbierto(false)}>
-              Cancelar
-            </Button>
+            <Button variant="outline" onClick={() => setFormAbierto(false)}>Cancelar</Button>
             <Button onClick={handleGuardar} disabled={guardando}>
               {guardando ? "Guardando..." : "Guardar"}
             </Button>
