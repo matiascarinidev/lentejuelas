@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, TrendingUp } from "lucide-react";
+import {  TrendingUp } from "lucide-react";
 import { CardSkeleton } from "../ui/card-skeleton";
 
 export function PuntoEquilibrioCard() {

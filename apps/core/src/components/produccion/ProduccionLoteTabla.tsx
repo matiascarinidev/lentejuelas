@@ -32,7 +32,7 @@ export function ProduccionLoteTabla({
   lotes,
   cargando,
   onVer,
-}: ProduccionLoteTablaProps) {
+}: Readonly<ProduccionLoteTablaProps>) {
   const [margenGlobal, setMargenGlobal] = useState(30);
   const margenes = [30, 40, 50, 60, 70, 80];
 

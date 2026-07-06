@@ -12,9 +12,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calculator, Loader2, TrendingUp } from "lucide-react";
+import { Calculator, Loader2 } from "lucide-react";
 import { simularProduccion } from "@/hooks/useProduccion";
 
 export function SimuladorPage() {

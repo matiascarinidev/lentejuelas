@@ -42,7 +42,7 @@ export function ProduccionForm({
   onClose,
   onSuccess,
   productos,
-}: ProduccionFormProps) {
+}: Readonly<ProduccionFormProps>) {
   const [productoId, setProductoId] = useState("");
   const [recetaId, setRecetaId] = useState("");
   const [factorManual, setFactorManual] = useState("");
@@ -203,7 +203,7 @@ export function ProduccionForm({
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto max-w-lg md:max-w-3xl">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto md:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Nueva Producción</DialogTitle>
         </DialogHeader>

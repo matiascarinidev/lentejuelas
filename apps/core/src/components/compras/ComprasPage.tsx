@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Search, Loader2, ChevronDown } from "lucide-react";
+import { Plus, } from "lucide-react";
 import { ProveedorForm } from "@/components/proveedores/ProveedorForm";
 import { CompraForm } from "./CompraForm";
 import { useCompras } from "@/hooks/useCompras";

@@ -10,13 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Pencil,
-  Trash2,
-  RotateCcw,
-  Loader2,
-  AlertTriangle,
-} from "lucide-react";
+import { Pencil, Trash2, RotateCcw, AlertTriangle } from "lucide-react";
 import { InsumoResponse } from "@/types/insumo";
 import { TableSkeleton } from "../ui/table-skeleton";
 import { ConfirmDialog } from "../ui/confirm-dialog";

@@ -18,7 +18,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Trash2, Loader2 } from "lucide-react";
@@ -42,7 +41,7 @@ export function CompraForm({
   onClose,
   onSuccess,
   proveedores,
-}: CompraFormProps) {
+}: Readonly<CompraFormProps>) {
   const [proveedorId, setProveedorId] = useState("");
   const [fecha, setFecha] = useState(new Date().toISOString().split("T")[0]);
   const [items, setItems] = useState<ItemLocal[]>([]);

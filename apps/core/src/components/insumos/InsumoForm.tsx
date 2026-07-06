@@ -34,7 +34,7 @@ export function InsumoForm({
   onSubmit,
   insumo,
   proveedores,
-}: InsumoFormProps) {
+}: Readonly<InsumoFormProps>) {
   const [nombre, setNombre] = useState(insumo?.nombre || "");
   const [tipo, setTipo] = useState(insumo?.tipo || TipoInsumo.MATERIA_PRIMA);
   const [unidadBase, setUnidadBase] = useState(

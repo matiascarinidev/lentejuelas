@@ -7,9 +7,7 @@ import {
   AlertTriangle,
   Package,
   DollarSign,
-  ShoppingCart,
   Factory,
-  TrendingUp,
   Loader2,
 } from "lucide-react";
 import { format } from "date-fns";

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, ShoppingCart } from "lucide-react";
 
-export function LayoutClient({ children }: { children: React.ReactNode }) {
+export function LayoutClient({ children }: Readonly<{ children: React.ReactNode }>) {
   const [alertas, setAlertas] = useState(0);
   const [pedidosPendientes, setPedidosPendientes] = useState(0);
   const VENTAS_API =
