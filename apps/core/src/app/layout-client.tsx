@@ -23,7 +23,10 @@ export function LayoutClient({
         .catch(() => {});
 
       fetch(`${VENTAS_API}/pedidos?estado=PENDIENTE`)
-        .then((r) => r.json())
+        .then((r) => {
+          if (!r.ok) throw new Error("CORS");
+          return r.json();
+        })
         .then((j) => {
           if (j.success) setPedidosPendientes(j.data.pedidos?.length || 0);
         })
