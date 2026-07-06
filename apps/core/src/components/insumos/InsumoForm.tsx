@@ -240,11 +240,11 @@ export function InsumoForm({
           </div>
 
           <DialogFooter className="flex flex-col gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancelar
-            </Button>
             <Button type="submit" disabled={guardando}>
               {guardando ? "Guardando..." : "Guardar"}
+            </Button>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancelar
             </Button>
           </DialogFooter>
         </form>

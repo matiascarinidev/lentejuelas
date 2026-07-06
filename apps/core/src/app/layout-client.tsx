@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, ShoppingCart } from "lucide-react";
 
-export function LayoutClient({ children }: Readonly<{ children: React.ReactNode }>) {
+export function LayoutClient({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const [alertas, setAlertas] = useState(0);
   const [pedidosPendientes, setPedidosPendientes] = useState(0);
   const VENTAS_API =
@@ -41,29 +43,30 @@ export function LayoutClient({ children }: Readonly<{ children: React.ReactNode 
             Lentejuelas
           </span>
           Core
-          <div className="flex items-center gap-2 md:gap-3">
-            {pedidosPendientes > 0 && (
-              <Badge
-                variant="outline"
-                className="flex items-center gap-1 border-amber-300 text-amber-700"
-              >
-                <ShoppingCart className="h-3 w-3" />
-                <span className="hidden md:inline">
-                  {pedidosPendientes} pedidos
-                </span>
-                <span className="md:hidden">{pedidosPendientes}</span> pedidos
-              </Badge>
-            )}
-            {alertas > 0 && (
-              <Badge variant="destructive" className="flex items-center gap-1">
-                <AlertTriangle className="h-3 w-3" />
-                <span className="hidden md:inline">{alertas} stock bajo</span>
-                <span className="md:hidden">{alertas} </span> stock bajo
-              </Badge>
-            )}
-          </div>
         </div>
       </nav>
+      <div className="flex p-4 md:p-6 items-center gap-2 md:gap-3">
+        {pedidosPendientes > 0 && (
+          <Badge
+            variant="outline"
+            className="flex items-center gap-1 border-amber-300 text-amber-700"
+          >
+            <ShoppingCart className="h-3 w-3" />
+            <span className="hidden md:inline">
+              {pedidosPendientes} pedidos
+            </span>
+            <span className="md:hidden">{pedidosPendientes}</span> pedidos
+          </Badge>
+        )}
+        {alertas > 0 && (
+          <Badge variant="destructive" className="flex items-center gap-1">
+            <AlertTriangle className="h-3 w-3" />
+            <span className="hidden md:inline">{alertas} stock bajo</span>
+            <span className="md:hidden">{alertas} </span> stock bajo
+          </Badge>
+        )}
+      </div>
+
       {children}
     </main>
   );
