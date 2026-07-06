@@ -239,7 +239,7 @@ export function InsumoForm({
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="flex flex-col gap-2">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancelar
             </Button>

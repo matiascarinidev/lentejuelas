@@ -204,7 +204,7 @@ export function ProductoForm({
                     Por unidad (x{costoProduccion.rendimientoBase}u):
                   </span>
                   <span className="font-medium text-blue-900">
-                    ${costoProduccion.costoUnitario.toFixed(4)}
+                    ${costoProduccion.costoUnitario.toFixed(2)}
                   </span>
                 </div>
                 {costoProduccion.costoPackCompleto > 0 &&
@@ -258,7 +258,7 @@ export function ProductoForm({
                       : (
                           costoProduccion.costoUnitario *
                           (1 + parseFloat(margenPropio) / 100)
-                        ).toFixed(4) + " (unidad)"}
+                        ).toFixed(2) + " (unidad)"}
                   </p>
                 </div>
               </div>
