@@ -100,17 +100,17 @@ enum EstadoComanda {
 }
 
 model ComandaItem {
-  id               String            @id @default(cuid())
-  comandaId        String
-  comanda          Comanda           @relation(fields: [comandaId], references: [id], onDelete: Cascade)
-  productoId       String
-  nombre           String?
-  cantidad         Int
-  precioUnitario   Decimal           @db.Decimal(10, 2)
-  subtotal         Decimal           @db.Decimal(10, 2)
-  esProductoPropio Boolean           @default(true)
-  estado           EstadoItemComanda @default(PENDIENTE)
-  createdAt        DateTime          @default(now())
+    id               String            @id @default(cuid())
+    comandaId        String
+    comanda          Comanda           @relation(fields: [comandaId], references: [id], onDelete: Cascade)
+    productoId       String
+    nombre           String?
+    cantidad         Int
+    precioUnitario   Decimal           @db.Decimal(10, 2)
+    subtotal         Decimal           @db.Decimal(10, 2)
+    esProductoPropio Boolean           @default(true)
+    estado           EstadoItemComanda @default(PENDIENTE)
+    createdAt        DateTime          @default(now())
 }
 
 enum EstadoItemComanda {
