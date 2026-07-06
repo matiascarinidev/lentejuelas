@@ -10,7 +10,7 @@ export async function POST(
   try {
     const body = await request.json();
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       await tx.recetaItemPackaging.deleteMany({
         where: { recetaId: params.id },
       });
