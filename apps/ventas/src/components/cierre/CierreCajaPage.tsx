@@ -69,7 +69,7 @@ export function CierreCajaPage() {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-4 md:p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Cierre de Caja</h1>
@@ -101,7 +101,7 @@ export function CierreCajaPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-gray-500">
@@ -146,34 +146,36 @@ export function CierreCajaPage() {
           <CardTitle className="text-base">Detalle de ventas</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Hora</TableHead>
-                <TableHead>Cliente</TableHead>
-                <TableHead>Método</TableHead>
-                <TableHead className="text-right">Total</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data?.ventas?.map((v: any) => (
-                <TableRow key={v.id}>
-                  <TableCell className="text-sm">
-                    {format(new Date(v.fecha), "HH:mm", { locale: es })}
-                  </TableCell>
-                  <TableCell>{v.cliente?.nombre || "Mostrador"}</TableCell>
-                  <TableCell>
-                    <Badge className={metodoColor[v.metodoPago]}>
-                      {v.metodoPago}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    ${Number(v.total).toFixed(2)}
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Hora</TableHead>
+                  <TableHead>Cliente</TableHead>
+                  <TableHead>Método</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {data?.ventas?.map((v: any) => (
+                  <TableRow key={v.id}>
+                    <TableCell className="text-sm">
+                      {format(new Date(v.fecha), "HH:mm", { locale: es })}
+                    </TableCell>
+                    <TableCell>{v.cliente?.nombre || "Mostrador"}</TableCell>
+                    <TableCell>
+                      <Badge className={metodoColor[v.metodoPago]}>
+                        {v.metodoPago}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      ${Number(v.total).toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
       <Card>

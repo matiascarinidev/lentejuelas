@@ -129,12 +129,12 @@ export function POSForm({ abierto, onClose, onSuccess }: POSFormProps) {
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Nueva Venta — POS</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Cliente (opcional)</Label>
               <Select value={clienteId} onValueChange={setClienteId}>

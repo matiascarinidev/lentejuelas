@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Minus } from "lucide-react";
-import { ProductoVenta } from "@/types";
 import { fetchCore } from "@/lib/api";
 
 interface ProductoSelectorProps {
@@ -145,7 +144,7 @@ export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
           {items.map((item) => (
             <div
               key={item.productoId}
-              className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg"
+              className="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-gray-50 p-3 rounded-lg"
             >
               <div className="flex-1">
                 <p className="text-sm font-medium">
@@ -186,10 +185,10 @@ export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
                       parseFloat(e.target.value) || 0
                     )
                   }
-                  className="w-20 h-8 text-sm text-right"
+                  className="h-8 text-sm text-right w-full sm:w-20"
                 />
               </div>
-              <span className="text-sm font-medium w-20 text-right">
+              <span className="text-sm font-medium w-full sm:w-20 text-left sm:text-right">
                 ${(item.cantidad * item.precioUnitario).toFixed(2)}
               </span>
             </div>

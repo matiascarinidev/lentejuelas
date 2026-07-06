@@ -62,7 +62,7 @@ export function ClientePage() {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-4 md:p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Clientes</h1>
         <Button onClick={() => setFormAbierto(true)}>
@@ -78,28 +78,30 @@ export function ClientePage() {
           className="pl-10"
         />
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Nombre</TableHead>
-            <TableHead>Teléfono</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Dirección</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {clientes.map((c: any) => (
-            <TableRow key={c.id}>
-              <TableCell className="font-medium">{c.nombre}</TableCell>
-              <TableCell>{c.telefono || "—"}</TableCell>
-              <TableCell>{c.email || "—"}</TableCell>
-              <TableCell>{c.direccion || "—"}</TableCell>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Teléfono</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Dirección</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {clientes.map((c: any) => (
+              <TableRow key={c.id}>
+                <TableCell className="font-medium">{c.nombre}</TableCell>
+                <TableCell>{c.telefono || "—"}</TableCell>
+                <TableCell>{c.email || "—"}</TableCell>
+                <TableCell>{c.direccion || "—"}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
       <Dialog open={formAbierto} onOpenChange={setFormAbierto}>
-        <DialogContent>
+        <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Nuevo Cliente</DialogTitle>
           </DialogHeader>
@@ -111,7 +113,7 @@ export function ClientePage() {
                 onChange={(e) => setNombre(e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium">Teléfono</label>
                 <Input

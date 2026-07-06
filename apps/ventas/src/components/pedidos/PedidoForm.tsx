@@ -103,7 +103,7 @@ export function PedidoForm({ abierto, onClose, onSuccess }: PedidoFormProps) {
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Nuevo Pedido</DialogTitle>
         </DialogHeader>
@@ -123,7 +123,7 @@ export function PedidoForm({ abierto, onClose, onSuccess }: PedidoFormProps) {
               </SelectContent>
             </Select>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Tipo</Label>
               <Select value={tipo} onValueChange={setTipo}>

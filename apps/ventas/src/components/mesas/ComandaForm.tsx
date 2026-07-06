@@ -70,7 +70,7 @@ export function ComandaForm({
 
   return (
     <Dialog open={abierto} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Abrir comanda — Mesa #{mesaNumero}</DialogTitle>
         </DialogHeader>

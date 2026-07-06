@@ -1,5 +1,11 @@
 "use client";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardPage } from "@/components/dashboard/DashboardPage";
 import { ClientePage } from "@/components/clientes/ClientePage";
@@ -27,7 +33,7 @@ export default function Home() {
   return (
     <LayoutClient>
       <div>
-        <div className="border-b bg-white px-6 overflow-x-auto">
+        <div className="hidden md:block border-b bg-white px-6 overflow-x-auto">
           <Tabs value={tab} onValueChange={setTab}>
             <TabsList className="w-full justify-start gap-6 rounded-none border-b-0 bg-transparent p-0 flex-nowrap">
               {tabs.map((t) => (
@@ -41,6 +47,20 @@ export default function Home() {
               ))}
             </TabsList>
           </Tabs>
+        </div>
+        <div className="md:hidden border-b bg-white px-4 py-2">
+          <Select value={tab} onValueChange={setTab}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {tabs.map((t) => (
+                <SelectItem key={t.value} value={t.value}>
+                  {t.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         {tab === "mesas" && <MesaPage />}
         {tab === "pos" && <POSPage />}

@@ -32,17 +32,18 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <nav className="border-b bg-white px-6 py-3">
+      <nav className="border-b bg-white px-4 md:px-6 py-3">
         <div className="flex items-center justify-between">
           <span className="text-lg font-bold text-emerald-700">
             Lentejuelas
           </span>
           Ventas
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             {mesasOcupadas > 0 && (
               <Badge variant="default" className="flex items-center gap-1">
                 <Coffee className="h-3 w-3" />
-                {mesasOcupadas} mesas
+                <span className="hidden md:inline">{mesasOcupadas} mesas</span>
+                <span className="md:hidden">{mesasOcupadas}</span> mesas
               </Badge>
             )}
             {pedidosPendientes > 0 && (
@@ -51,7 +52,10 @@ export function LayoutClient({ children }: { children: React.ReactNode }) {
                 className="flex items-center gap-1 border-amber-300 text-amber-700"
               >
                 <Clock className="h-3 w-3" />
-                {pedidosPendientes} pendientes
+                <span className="hidden md:inline">
+                  {pedidosPendientes} pedidos
+                </span>
+                <span className="md:hidden">{pedidosPendientes}</span> pedidos
               </Badge>
             )}
           </div>

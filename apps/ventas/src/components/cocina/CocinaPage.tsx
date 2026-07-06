@@ -66,7 +66,7 @@ export function CocinaPage() {
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-4 md:p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Cocina</h1>
         <Badge variant="outline" className="text-lg px-4 py-2">
@@ -74,7 +74,7 @@ export function CocinaPage() {
         </Badge>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {items.map((item) => (
           <Card key={item.id} className={getEstadoColor(item)}>
             <CardHeader className="pb-2">
