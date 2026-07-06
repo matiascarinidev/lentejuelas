@@ -19,7 +19,6 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@prisma/client": ["./src/generated/prisma"]
     },
     "baseUrl": "."
   },
