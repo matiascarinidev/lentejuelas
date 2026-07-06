@@ -56,7 +56,7 @@ export function LayoutClient({
           >
             <ShoppingCart className="h-3 w-3" />
             <span className="hidden md:inline">
-              {pedidosPendientes} pedidos
+              {pedidosPendientes}
             </span>
             <span className="md:hidden">{pedidosPendientes}</span> pedidos
           </Badge>
@@ -64,7 +64,7 @@ export function LayoutClient({
         {alertas > 0 && (
           <Badge variant="destructive" className="flex items-center gap-1">
             <AlertTriangle className="h-3 w-3" />
-            <span className="hidden md:inline">{alertas} stock bajo</span>
+            <span className="hidden md:inline">{alertas}</span>
             <span className="md:hidden">{alertas} </span> stock bajo
           </Badge>
         )}
