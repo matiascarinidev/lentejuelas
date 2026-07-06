@@ -5,7 +5,6 @@ export function middleware(request: NextRequest) {
   const origin = request.headers.get("origin") || "";
   const allowedOrigins = [
     "http://localhost:3002",
-    "https://lentejuelas-ventas.vercel.app",
     "https://lentejuelas-core.vercel.app",
   ];
 
