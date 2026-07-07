@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev": "next dev -p 3002",
-        "build": "next build",
+        "build": "prisma generate && next build",
         "start": "next start -p 3002",
         "lint": "next lint",
         "db:generate": "prisma generate",
@@ -14,7 +14,7 @@
     },
     "dependencies": {
         "@lentejuelas/shared": "workspace:*",
-        "@prisma/client": "^5.14.0",
+        "@prisma/client": "^5.22.0",
         "@radix-ui/react-dialog": "^1.1.15",
         "@radix-ui/react-label": "^2.1.8",
         "@radix-ui/react-progress": "^1.1.8",
@@ -43,7 +43,7 @@
         "@types/node": "^20.19.39",
         "@types/react": "^18.3.0",
         "@types/react-dom": "^18.3.0",
-        "prisma": "^5.14.0",
+        "prisma": "^5.22.0",
         "typescript": "^5.9.3"
     },
     "prisma": {
