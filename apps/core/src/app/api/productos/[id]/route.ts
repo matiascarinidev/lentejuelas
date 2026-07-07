@@ -8,17 +8,18 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const costo = await ProductoService.obtenerCostoActual(params.id);
-    if (!costo) {
+    const producto = await ProductoService.obtenerPorId(params.id);
+    if (!producto) {
       return NextResponse.json(
-        { success: false, error: "No se pudo calcular el costo" },
+        { success: false, error: "Producto no encontrado" },
         { status: 404 }
       );
     }
-    return NextResponse.json({ success: true, data: costo });
+    return NextResponse.json({ success: true, data: producto });
   } catch (error) {
+    console.error("Error al obtener producto:", error);
     return NextResponse.json(
-      { success: false, error: "Error al calcular costo" },
+      { success: false, error: "Error al obtener producto" },
       { status: 500 }
     );
   }

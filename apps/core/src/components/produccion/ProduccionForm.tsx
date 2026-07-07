@@ -435,10 +435,10 @@ export function ProduccionForm({
                 </CardContent>
               </Card>
 
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <Card>
                   <CardContent className="pt-3 pb-3">
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col gap-2 justify-between items-center">
                       <span className="text-sm font-medium">Materia prima</span>
                       <span className="text-sm font-bold">
                         ${simulacion.costoMateriaPrima.toFixed(2)}
@@ -448,22 +448,24 @@ export function ProduccionForm({
                 </Card>
                 <Card>
                   <CardContent className="pt-3 pb-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">Packaging</span>
+                    <div className="flex flex-col gap-2 justify-between items-center">
+                      <span className="flex flex-col items-center text-sm font-medium">
+                        Packaging
+                        {simulacion.cantidadPacks > 0 && (
+                          <p className="text-xs text-gray-400 mt-1">
+                            {simulacion.cantidadPacks} packs
+                          </p>
+                        )}
+                      </span>
                       <span className="text-sm font-bold">
                         ${simulacion.costoPackaging.toFixed(2)}
                       </span>
                     </div>
-                    {simulacion.cantidadPacks > 0 && (
-                      <p className="text-xs text-gray-400 mt-1">
-                        {simulacion.cantidadPacks} packs
-                      </p>
-                    )}
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="pt-3 pb-3">
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col gap-2 justify-between items-center">
                       <span className="text-sm font-medium">Operativos</span>
                       <span className="text-sm font-bold">
                         ${simulacion.costoOperativo.toFixed(2)}
@@ -473,7 +475,7 @@ export function ProduccionForm({
                 </Card>
                 <Card>
                   <CardContent className="pt-3 pb-3">
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col gap-2 justify-between items-center">
                       <span className="text-sm font-medium">Amortización</span>
                       <span className="text-sm font-bold">
                         ${simulacion.costoAmortizacion.toFixed(2)}

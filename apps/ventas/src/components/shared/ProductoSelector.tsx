@@ -4,7 +4,14 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, Minus } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Search, Plus, Minus, X } from "lucide-react";
 import { fetchCore } from "@/lib/api";
 
 interface ProductoSelectorProps {
@@ -29,31 +36,62 @@ interface ProductoSelectorProps {
     }[]
   ) => void;
 }
+
+const normalizar = (texto: string) => {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+};
+
 export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
   const [productos, setProductos] = useState<any[]>([]);
+  const [categorias, setCategorias] = useState<
+    { id: string; nombre: string }[]
+  >([]);
   const [busqueda, setBusqueda] = useState("");
+  const [filtroCategoria, setFiltroCategoria] = useState("TODAS");
   const [mostrando, setMostrando] = useState(false);
 
-  fetchCore("/productos?limite=100&activo=true").then((data) => {
-    if (data.success && data.data?.productos) {
-      setProductos(
-        data.data.productos.map((p: any) => ({
+  useEffect(() => {
+    fetchCore("/productos?limite=100&activo=true").then((data) => {
+      if (data.success && data.data?.productos) {
+        const prods = data.data.productos.map((p: any) => ({
           ...p,
           stockActual: Number(p.stockActual) || 0,
           precioVenta: Number(p.precioVentaFinal ?? p.precioVentaSugerido) || 0,
           unidadesPorPack: p.recetas?.[0]?.unidadesPorPack || null,
           requiereCocina: p.requiereCocina ?? false,
           esProduccionPropia: p.esProduccionPropia ?? false,
-        }))
-      );
-    }
-  });
+          categoriaNombre: p.categoria?.nombre || "Sin categoría",
+        }));
+        setProductos(prods);
 
-  const productosFiltrados = productos.filter(
-    (p) =>
-      p.nombre.toLowerCase().includes(busqueda.toLowerCase()) &&
-      !items.find((i) => i.productoId === p.id)
-  );
+        // Extraer categorías únicas
+        const cats = new Map<string, string>();
+        prods.forEach((p: any) => {
+          if (p.categoriaId && p.categoriaNombre) {
+            cats.set(p.categoriaId, p.categoriaNombre);
+          }
+        });
+        setCategorias(
+          Array.from(cats.entries()).map(([id, nombre]) => ({ id, nombre }))
+        );
+      }
+    });
+  }, []);
+
+  const productosFiltrados = productos
+    .filter((p) => {
+      const coincideBusqueda = normalizar(p.nombre).includes(
+        normalizar(busqueda)
+      );
+      const coincideCategoria =
+        filtroCategoria === "TODAS" || p.categoriaId === filtroCategoria;
+      const noEstaAgregado = !items.find((i) => i.productoId === p.id);
+      return coincideBusqueda && coincideCategoria && noEstaAgregado;
+    })
+    .sort((a, b) => a.nombre.localeCompare(b.nombre));
 
   const agregarProducto = (p: any) => {
     onChange([
@@ -96,53 +134,102 @@ export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
 
   return (
     <div className="space-y-4">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-        <Input
-          placeholder="Buscar producto..."
-          value={busqueda}
-          onChange={(e) => {
-            setBusqueda(e.target.value);
-            setMostrando(true);
-          }}
-          onFocus={() => setMostrando(true)}
-          className="pl-10"
-        />
-        {mostrando && busqueda && (
-          <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-48 overflow-y-auto">
+      {/* Filtros */}
+      <div className="flex flex-col md:flex-row gap-2">
+        <Select value={filtroCategoria} onValueChange={setFiltroCategoria}>
+          <SelectTrigger className="w-full md:w-40">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="TODAS">Todas</SelectItem>
+            {categorias.map((c) => (
+              <SelectItem key={c.id} value={c.id}>
+                {c.nombre}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <div className="relative w-full">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Input
+            placeholder="Buscar producto..."
+            value={busqueda}
+            onChange={(e) => {
+              setBusqueda(e.target.value);
+              setMostrando(true);
+            }}
+            onFocus={() => setMostrando(true)}
+            className="pl-10"
+          />
+        </div>
+      </div>
+
+      {/* Dropdown de productos */}
+      {/* Lista de productos */}
+      {mostrando && (
+        <div className="border rounded-md overflow-hidden">
+          <div className="flex items-center justify-between px-3 py-2 border-b bg-gray-50">
+            <span className="text-xs text-gray-500">
+              {productosFiltrados.length} producto
+              {productosFiltrados.length !== 1 ? "s" : ""}
+            </span>
+            <button
+              onClick={() => setMostrando(false)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="max-h-56 overflow-y-auto">
             {productosFiltrados.length === 0 ? (
-              <p className="p-3 text-sm text-gray-500">Sin resultados</p>
+              <p className="p-3 text-sm text-gray-500 text-center">
+                Sin resultados
+              </p>
             ) : (
-              productosFiltrados.slice(0, 8).map((p) => (
+              productosFiltrados.map((p) => (
                 <button
                   key={p.id}
-                  className="w-full text-left px-3 py-2 hover:bg-gray-50"
+                  className="w-full text-left px-3 py-2 hover:bg-gray-50 border-b border-gray-50 last:border-b-0"
                   onClick={() => {
                     agregarProducto(p);
                     setMostrando(false);
                   }}
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-sm">{p.nombre}</span>
-                      <span className="text-xs text-gray-400 block">
-                        Stock:{" "}
+                  <div >
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{p.nombre}</span>
+                      {p.requiereCocina && (
+                        <Badge
+                          variant="outline"
+                          className="text-xs bg-orange-50 text-orange-600 border-orange-200 justify-self-end"
+                        >
+                          Cocina
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex gap-2 justify-between ">
+                      <span className="text-xs text-gray-400">
+                        {p.categoriaNombre}
+                        {" · "}
                         {p.unidadesPorPack
                           ? `${Math.floor(p.stockActual / p.unidadesPorPack)} packs`
-                          : `${p.stockActual} unidades`}
+                          : p.requiereCocina
+                            ? "Se prepara al momento"
+                            : `${p.stockActual} en stock`}
                       </span>
+                      <Badge variant="outline" className="text-xs">
+                        ${p.precioVenta.toFixed(2)}
+                      </Badge>
                     </div>
-                    <Badge variant="outline" className="text-xs">
-                      ${p.precioVenta.toFixed(2)}
-                    </Badge>
                   </div>
                 </button>
               ))
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
+      {/* Items agregados */}
       {items.length > 0 && (
         <div className="space-y-2">
           {items.map((item) => (

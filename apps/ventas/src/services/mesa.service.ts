@@ -66,20 +66,23 @@ export class MesaService {
         const res = await fetchCore(`/productos/${data.productoId}`);
         if (res.success) {
           const producto = res.data;
-          requiereCocina = producto.requiereCocina ?? false;
+          requiereCocina = Boolean(producto.requiereCocina);
 
-          const unidadesPorPack = producto.recetas?.[0]?.unidadesPorPack || 1;
-          const stockNecesario = data.cantidad * unidadesPorPack;
+          // Solo validar stock si NO requiere cocina (se vende desde stock físico)
+          if (!requiereCocina) {
+            const unidadesPorPack = producto.recetas?.[0]?.unidadesPorPack || 1;
+            const stockNecesario = data.cantidad * unidadesPorPack;
 
-          if (producto.stockActual < stockNecesario) {
-            throw new Error(
-              `Stock insuficiente: ${producto.nombre} tiene ${
-                unidadesPorPack > 1
-                  ? Math.floor(producto.stockActual / unidadesPorPack) +
-                    " packs"
-                  : producto.stockActual + " unidades"
-              } disponibles.`
-            );
+            if (producto.stockActual < stockNecesario) {
+              throw new Error(
+                `Stock insuficiente: ${producto.nombre} tiene ${
+                  unidadesPorPack > 1
+                    ? Math.floor(producto.stockActual / unidadesPorPack) +
+                      " packs"
+                    : producto.stockActual + " unidades"
+                } disponibles.`
+              );
+            }
           }
         }
       } catch (err: any) {

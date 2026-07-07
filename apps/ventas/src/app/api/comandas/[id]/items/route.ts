@@ -16,8 +16,9 @@ export async function POST(
     });
     return NextResponse.json({ success: true, data: item }, { status: 201 });
   } catch (error: any) {
+    console.error("ERROR ITEMS:", error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: error.message, stack: error.stack },
       { status: 500 }
     );
   }

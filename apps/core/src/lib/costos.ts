@@ -143,6 +143,9 @@ export async function calcularCostoProduccion(params: {
     where: { prorrateable: true },
   });
 
+  // Estimar tandas mensuales según producción histórica o un valor fijo
+  const TANDAS_MENSUALES_ESTIMADAS = 100;
+
   let costoOperativo = 0;
   const gastosOperativosAplicados: {
     concepto: string;
@@ -158,10 +161,11 @@ export async function calcularCostoProduccion(params: {
         montoProrrateado: Math.round(montoProrrateado * 100) / 100,
       });
     } else if (!gasto.esManoDeObra) {
-      costoOperativo += Number(gasto.monto);
+      const montoProrrateado = Number(gasto.monto) / TANDAS_MENSUALES_ESTIMADAS;
+      costoOperativo += montoProrrateado;
       gastosOperativosAplicados.push({
         concepto: gasto.concepto,
-        montoProrrateado: Number(gasto.monto),
+        montoProrrateado: Math.round(montoProrrateado * 100) / 100,
       });
     }
   }
