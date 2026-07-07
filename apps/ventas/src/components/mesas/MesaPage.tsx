@@ -30,6 +30,7 @@ export function MesaPage() {
   const [creando, setCreando] = useState(false);
   const [cerrando, setCerrando] = useState(false);
   const [itemsListosPrevios, setItemsListosPrevios] = useState(0);
+  const [agregando, setAgregando] = useState(false);
 
   const fetchMesas = async () => {
     const res = await fetch("/api/mesas");
@@ -149,7 +150,7 @@ export function MesaPage() {
 
   const agregarItemsAComanda = async () => {
     if (!comandaAbierta || itemsAdicionales.length === 0) return;
-
+    setAgregando(true);
     try {
       for (const item of itemsAdicionales) {
         const res = await fetch(`/api/comandas/${comandaAbierta.id}/items`, {
@@ -181,6 +182,8 @@ export function MesaPage() {
       fetchMesas();
     } catch (err: any) {
       alert("Error: " + err.message);
+    } finally {
+      setAgregando(false);
     }
   };
 
@@ -444,9 +447,9 @@ export function MesaPage() {
                   <Button
                     size="sm"
                     onClick={agregarItemsAComanda}
-                    disabled={itemsAdicionales.length === 0}
+                    disabled={itemsAdicionales.length === 0 || agregando}
                   >
-                    Agregar items a comanda
+                    {agregando ? "Agregando..." : "Agregar items a comanda"}
                   </Button>
                 </div>
               )}

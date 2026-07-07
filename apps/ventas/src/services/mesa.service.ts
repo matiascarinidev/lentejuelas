@@ -55,17 +55,22 @@ export class MesaService {
       nombre?: string | null;
       cantidad: number;
       precioUnitario: number;
-      requiereCocina?: boolean;
       esProductoPropio?: boolean;
     }
   ) {
+    let requiereCocina = false;
+
+    // Buscar el producto en Core para validar stock y saber si requiere cocina
     if (data.esProductoPropio) {
       try {
         const res = await fetchCore(`/productos/${data.productoId}`);
         if (res.success) {
           const producto = res.data;
+          requiereCocina = producto.requiereCocina ?? false;
+
           const unidadesPorPack = producto.recetas?.[0]?.unidadesPorPack || 1;
           const stockNecesario = data.cantidad * unidadesPorPack;
+
           if (producto.stockActual < stockNecesario) {
             throw new Error(
               `Stock insuficiente: ${producto.nombre} tiene ${
@@ -84,7 +89,7 @@ export class MesaService {
 
     const subtotal =
       Math.round(data.cantidad * data.precioUnitario * 100) / 100;
-    const estadoInicial = data.requiereCocina ? "PENDIENTE" : "ENTREGADO";
+    const estadoInicial = requiereCocina ? "PENDIENTE" : "ENTREGADO";
 
     await prisma.comandaItem.create({
       data: {
