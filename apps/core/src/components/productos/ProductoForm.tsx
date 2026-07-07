@@ -38,6 +38,7 @@ export function ProductoForm({
   const [nombre, setNombre] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
   const [esPropio, setEsPropio] = useState(true);
+  const [requiereCocina, setRequiereCocina] = useState(false);
   const [costoCompra, setCostoCompra] = useState("");
   const [margen, setMargen] = useState("30");
   const [precioVentaSugerido, setPrecioVentaSugerido] = useState("");
@@ -61,6 +62,7 @@ export function ProductoForm({
       setNombre(producto.nombre || "");
       setCategoriaId(producto.categoriaId || producto.categoria?.id || "");
       setEsPropio(producto.esProduccionPropia);
+      setRequiereCocina(producto.requiereCocina ?? false);
       setCostoCompra(producto.costoCompra?.toString() || "");
       setMargen(producto.margenGanancia?.toString() || "30");
       setMargenPropio(producto.margenGanancia?.toString() || "30");
@@ -122,6 +124,7 @@ export function ProductoForm({
         nombre,
         categoriaId: categoriaId || null,
         esProduccionPropia: esPropio,
+        requiereCocina,
         costoCompra: !esPropio ? parseFloat(costoCompra) : null,
         margenGanancia: esPropio
           ? parseFloat(margenPropio)
@@ -189,7 +192,20 @@ export function ProductoForm({
               Calculando costo de producción actual...
             </div>
           )}
-
+          {esPropio && (
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="requiereCocina"
+                checked={requiereCocina}
+                onChange={(e) => setRequiereCocina(e.target.checked)}
+                className="rounded border-gray-300 h-4 w-4"
+              />
+              <Label htmlFor="requiereCocina">
+                Requiere preparación en cocina
+              </Label>
+            </div>
+          )}
           {esPropio && costoProduccion && (
             <>
               <div className="rounded-lg bg-blue-50 p-4 space-y-2">

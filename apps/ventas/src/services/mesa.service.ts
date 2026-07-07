@@ -83,7 +83,7 @@ export class MesaService {
 
     const subtotal =
       Math.round(data.cantidad * data.precioUnitario * 100) / 100;
-
+    const estadoInicial = data.esProductoPropio ? "PENDIENTE" : "ENTREGADO";
     await prisma.comandaItem.create({
       data: {
         comandaId,
@@ -93,6 +93,7 @@ export class MesaService {
         precioUnitario: data.precioUnitario,
         subtotal,
         esProductoPropio: data.esProductoPropio ?? true,
+        estado: estadoInicial,
       },
     });
 

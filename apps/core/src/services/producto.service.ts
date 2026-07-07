@@ -104,6 +104,7 @@ export class ProductoService {
         nombre: data.nombre,
         categoriaId: data.categoriaId || null,
         esProduccionPropia: data.esProduccionPropia,
+        requiereCocina: data.requiereCocina ?? false,
         costoCompra: data.costoCompra || null,
         margenGanancia: data.margenGanancia || null,
         precioVentaSugerido: Math.round(precioVenta * 100) / 100,
@@ -120,6 +121,8 @@ export class ProductoService {
       updateData.categoriaId = data.categoriaId || null;
     if (data.esProduccionPropia !== undefined)
       updateData.esProduccionPropia = data.esProduccionPropia;
+    if (data.requiereCocina !== undefined)
+      updateData.requiereCocina = data.requiereCocina;
     if (data.costoCompra !== undefined)
       updateData.costoCompra = data.costoCompra;
     if (data.margenGanancia !== undefined)

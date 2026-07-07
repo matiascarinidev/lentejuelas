@@ -29,7 +29,10 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    const itemsOrdenados = items.sort((a, b) => {
+    // Filtrar solo productos que requieren cocina
+    const itemsCocina = items.filter((item) => item.esProductoPropio);
+
+    const itemsOrdenados = itemsCocina.sort((a, b) => {
       const tiempoA = Date.now() - new Date(a.createdAt).getTime();
       const tiempoB = Date.now() - new Date(b.createdAt).getTime();
 

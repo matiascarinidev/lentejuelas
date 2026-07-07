@@ -391,7 +391,7 @@ export function MesaPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span>${Number(item.subtotal).toFixed(2)}</span>
-                      {item.estado === "LISTO" && (
+                      {item.estado === "LISTO" && item.requiereCocina && (
                         <Button
                           size="sm"
                           variant="outline"

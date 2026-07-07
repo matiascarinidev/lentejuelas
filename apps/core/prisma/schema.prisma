@@ -62,6 +62,7 @@ model Producto {
   categoriaId         String?
   categoria           Categoria? @relation(fields: [categoriaId], references: [id])
   esProduccionPropia  Boolean    @default(true)
+  requiereCocina      Boolean    @default(false)
   costoCompra         Decimal?   @db.Decimal(10, 2)
   margenGanancia      Decimal?   @default(30) @db.Decimal(5, 2)
   precioVentaSugerido Decimal    @db.Decimal(10, 2)

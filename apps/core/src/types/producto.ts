@@ -2,6 +2,7 @@ export interface ProductoDTO {
   nombre: string;
   categoriaId?: string | null;
   esProduccionPropia: boolean;
+  requiereCocina?: boolean;
   costoCompra?: number | null;
   margenGanancia?: number | null;
   precioVentaSugerido: number;
@@ -17,6 +18,7 @@ export interface ProductoResponse {
     nombre: string;
   } | null;
   esProduccionPropia: boolean;
+  requiereCocina: boolean;
   costoCompra: number | null;
   margenGanancia: number | null;
   precioVentaSugerido: number;
