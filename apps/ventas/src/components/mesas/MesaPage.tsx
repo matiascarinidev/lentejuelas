@@ -160,7 +160,8 @@ export function MesaPage() {
             nombre: item.nombre || null,
             cantidad: item.cantidad,
             precioUnitario: item.precioUnitario,
-            esProductoPropio: true,
+            requiereCocina: item.requiereCocina ?? false,
+            esProductoPropio: item.esProductoPropio ?? true,
           }),
         });
 
@@ -253,14 +254,15 @@ export function MesaPage() {
                           )}
                           {mesa.comandas[0].items?.filter(
                             (item: any) =>
-                              item.estado === "PENDIENTE" || "EN_PREPARACION"
+                              item.estado === "PENDIENTE" ||
+                              item.estado === "EN_PREPARACION"
                           ).length > 0 && (
                             <Badge className="text-xs bg-amber-100 text-amber-800">
                               {
                                 mesa.comandas[0].items.filter(
                                   (item: any) =>
                                     item.estado === "PENDIENTE" ||
-                                    "EN_PREPARACION"
+                                    item.estado === "EN_PREPARACION"
                                 ).length
                               }{" "}
                               pendiente
@@ -391,7 +393,7 @@ export function MesaPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span>${Number(item.subtotal).toFixed(2)}</span>
-                      {item.estado === "LISTO" && item.requiereCocina && (
+                      {item.estado === "LISTO" && item.esProductoPropio && (
                         <Button
                           size="sm"
                           variant="outline"

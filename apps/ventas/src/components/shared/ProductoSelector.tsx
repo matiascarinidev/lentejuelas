@@ -13,6 +13,8 @@ interface ProductoSelectorProps {
     cantidad: number;
     precioUnitario: number;
     nombre?: string;
+    requiereCocina?: boolean;
+    esProductoPropio?: boolean;
     unidadesPorPack?: number | null;
   }[];
   onChange: (
@@ -21,31 +23,31 @@ interface ProductoSelectorProps {
       cantidad: number;
       precioUnitario: number;
       nombre?: string;
+      requiereCocina?: boolean;
+      esProductoPropio?: boolean;
       unidadesPorPack?: number | null;
     }[]
   ) => void;
 }
-
 export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
   const [productos, setProductos] = useState<any[]>([]);
   const [busqueda, setBusqueda] = useState("");
   const [mostrando, setMostrando] = useState(false);
 
-  useEffect(() => {
-    fetchCore("/productos?limite=100&activo=true").then((data) => {
-      if (data.success && data.data?.productos) {
-        setProductos(
-          data.data.productos.map((p: any) => ({
-            ...p,
-            stockActual: Number(p.stockActual) || 0,
-            precioVenta:
-              Number(p.precioVentaFinal ?? p.precioVentaSugerido) || 0,
-            unidadesPorPack: p.recetas?.[0]?.unidadesPorPack || null,
-          }))
-        );
-      }
-    });
-  }, []);
+  fetchCore("/productos?limite=100&activo=true").then((data) => {
+    if (data.success && data.data?.productos) {
+      setProductos(
+        data.data.productos.map((p: any) => ({
+          ...p,
+          stockActual: Number(p.stockActual) || 0,
+          precioVenta: Number(p.precioVentaFinal ?? p.precioVentaSugerido) || 0,
+          unidadesPorPack: p.recetas?.[0]?.unidadesPorPack || null,
+          requiereCocina: p.requiereCocina ?? false,
+          esProduccionPropia: p.esProduccionPropia ?? false,
+        }))
+      );
+    }
+  });
 
   const productosFiltrados = productos.filter(
     (p) =>
@@ -62,6 +64,8 @@ export function ProductoSelector({ items, onChange }: ProductoSelectorProps) {
         cantidad: 1,
         precioUnitario: p.precioVenta,
         unidadesPorPack: p.unidadesPorPack || null,
+        requiereCocina: p.requiereCocina ?? false,
+        esProductoPropio: p.esProduccionPropia ?? false,
       },
     ]);
     setBusqueda("");

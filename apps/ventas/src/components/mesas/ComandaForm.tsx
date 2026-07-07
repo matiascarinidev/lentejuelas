@@ -55,7 +55,8 @@ export function ComandaForm({
             nombre: item.nombre || null,
             cantidad: item.cantidad,
             precioUnitario: item.precioUnitario,
-            esProductoPropio: true,
+            requiereCocina: item.requiereCocina ?? false,
+            esProductoPropio: item.esProductoPropio ?? true,
           }),
         });
       }
